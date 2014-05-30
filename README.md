@@ -29,6 +29,6 @@ I uploaded a demo sketch file and the generated HTML files which shows some magi
 
 Yes, the tag `[case=red]` on the sketch group will help you generate a interactive HTML files.
 
-	##What's next?##
+##What's next?##
 
 I will continue write magic tags for blade, and tring to integrate AngularJS to help build better prototype。
