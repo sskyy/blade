@@ -11,6 +11,10 @@ Blade  V0.0.1
 
 Blade is a Sketch 3 plugin for automatically HTML generating. It will generate tag `<div>` for group, tag `<p>` for text , etc. 
 
+##How to Install?##
+
+Just place `blade.sketchplugin` and `blade` folder in your Sketch plugin folder.
+
 ##Any amazing features?##
 
 I uploaded a demo sketch file and the generated HTML files which shows some magic. Have a quick look here:
