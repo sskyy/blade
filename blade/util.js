@@ -235,6 +235,10 @@ var Util = Util || (function() {
     my.log = function(message) {
         if( !Config.show_error ) return
 
+        if( arguments.length !== 1 ){
+            message = Array.prototype.join.call( arguments, ", " )
+        }
+
         var logWindow = my.logWindow();
         [logWindow makeKeyAndOrderFront:nil];
 
@@ -300,7 +304,7 @@ var Util = Util || (function() {
 
     my.remove_folder = function( folder ){
         Util.log("removing file at :"+folder)
-        [file_manager removeItemAtPath:folder error:nil]
+            [file_manager removeItemAtPath:folder error:nil]
     }
 
     my.folder_exist = function( folder ){
@@ -326,6 +330,22 @@ var Util = Util || (function() {
             Util.log('cannot copy,file not exist: '+org)
         }
     }
+
+    my.uniq = (function(){
+        var cache = {}
+
+        return function( str ){
+            str = str.replace("-","_")
+
+            if( !cache[str] ){
+                cache[str] = 1
+                return str
+            }else{
+                cache[str] += 1
+                return str + "-" + String(cache[str])
+            }
+        }
+    })()
 
     function join( obj, kvSplitor, itemSplitor ){
         if( typeof obj !== 'object') return false
@@ -395,6 +415,22 @@ var Util = Util || (function() {
         }
     }
 
+    function extend( tar, src ){
+        each( src, function( v,k){
+            if( Object.prototype.toString.call( v) == '[object Object]'){
+                tar[k] = {}
+                extend( tar[k], src[k])
+            }else if( Object.prototype.toString.call( v) == '[object Array]'){
+                tar[k] = []
+                extend( tar[k], src[k])
+            }else{
+                tar[k] = src[k]
+            }
+        })
+
+        return tar
+    }
+
     function wrap_script( script ){
         if( typeof script == 'object'){
             var arr = script
@@ -439,6 +475,7 @@ var Util = Util || (function() {
     my.values = values
     my.in_array = in_array
     my.each = each
+    my.extend = extend
     my.wrap_script = wrap_script
     my.render_variables = render_variables
     my.script_to_string =script_to_string

@@ -18,50 +18,30 @@
 
 
 function export_as_img( layer, filename ){
-    // copy off-screen
-    var layer_copy = [layer duplicate];
-    var frame = [layer_copy frame];
-
-    [frame setX:-100000];
-    [frame setY:-100000];
+  // Actual writing of asset
+  var slice,
+    rect = [layer rectByAccountingForStyleSize:[[layer absoluteRect] rect]]
 
 
-    // export
-    var rect = [layer_copy rectByAccountingForStyleSize:[[layer_copy absoluteRect] rect]],
-        slice = [MSSlice sliceWithRect:rect scale:2];
+  slice = [[MSSliceMaker slicesFromExportableLayer:layer inRect:rect] firstObject]
+  slice.page = [[doc currentPage] copyLightweight]
+  slice.format = "png"
 
-    if (in_sandbox()) {
-        sandboxAccess.accessFilePath_withBlock_persistPermission( Config.target_folder, function(){
-            [doc saveArtboardOrSlice:slice toFile:filename];
-        }, true)
-    } else {
-        [doc saveArtboardOrSlice:slice toFile:filename];
-    }
+//  Util.log("— writing asset " + slice + " to disk: " + filename)
+  var imageData = [MSSliceExporter dataForRequest:slice]
+  [imageData writeToFile:filename atomically:true]
 
-    // remove it
-    [layer_copy removeFromParent];
 }
 
 function output( processResult ){
 
     //1. Create folders
-    if (in_sandbox()) {
-        sandboxAccess.accessFilePath_withBlock_persistPermission( Config.target_folder, function(){
-            if( Util.folder_exist( Config.target_folder) ){
-                Util.remove_folder( Config.target_folder)
-            }
-            Util.create_folders(
-                        [NSArray arrayWithObjects:
-                            Config.target_folder,Config.images_folder,Config.js_folder,Config.css_folder,nil])
-        }, true)
-    } else {
-        if( Util.folder_exist( Config.target_folder) ){
-            Util.remove_folder( Config.target_folder)
-        }
-        Util.create_folders(
-            [NSArray arrayWithObjects:
-                Config.target_folder,Config.images_folder,Config.js_folder,Config.css_folder,nil])
+    if( Util.folder_exist( Config.target_folder) ){
+        Util.remove_folder( Config.target_folder)
     }
+    Util.create_folders(
+        [NSArray arrayWithObjects:
+            Config.target_folder,Config.images_folder,Config.js_folder,Config.css_folder,nil])
 
     //2. Save inline script as single file
     // Single script structure : {comment:"",src:"",script:""}
@@ -114,6 +94,7 @@ function output( processResult ){
     //4. Export images
     if( processResult.exportFiles ){
         Util.each( processResult.exportFiles, function( fileObj ){
+            Util.log("exporting "+fileObj.target)
             export_as_img( fileObj.layer, fileObj.target )
         })
     }
@@ -148,6 +129,8 @@ function main() {
         Util.log("###################")
         Util.log("###  blade end  ###")
         Util.log("###################")
+        [doc showMessage:"Export Complete"]
+
     })
 }
 

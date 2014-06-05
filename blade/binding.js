@@ -61,7 +61,7 @@ var Binding = Binding || (function(){
      * @return {object|undefined} parentOutputRef - notice that we will always return parentOutputRef.
      */
     function apply_bindings( layer, parentOutputRef, bindings ){
-        Util.log("apply_bindings for "+ layer.name()+" : "+get_kind(layer) )
+        Util.log("apply_bindings for "+ layer.name()+" : "+get_kind(layer) + " : " + layer.className() )
         if( !is_layer( layer) ){
             Util.log("please pass a layer as first argument.")
             return
@@ -192,47 +192,30 @@ var Binding = Binding || (function(){
     function generate_dom_by_kind( layer, outputRef ){
 
         var kind = get_kind( layer),generatorName = domGenerators[kind]? kind : 'default'
+        Util.log("generate dom for " + kind)
 
-        //1. generate dom
         domGenerators[generatorName].dom( layer, outputRef )
-
-        //2. set position to the parent
-        outputRef.dom.style.position = "absolute"
-        if( get_kind(layer.parentGroup()) == 'LayerGroup' ){
-            outputRef.dom.style.left = layer.absoluteRect().rulerX() - layer.parentGroup().absoluteRect().rulerX()
-            outputRef.dom.style.top = layer.absoluteRect().rulerY() - layer.parentGroup().absoluteRect().rulerY()
-        }else{
-            outputRef.dom.style.left = layer.absoluteRect().rulerX()
-            outputRef.dom.style.top = layer.absoluteRect().rulerY()
-        }
-
-        outputRef.dom.style.width =  layer.absoluteRect().width()
-        outputRef.dom.style.height =  layer.absoluteRect().height()
-
-        //3. set inline css
-        if( outputRef.dom.tagName !== 'img'){
-            var styles = layer.CSSAttributes()
-            Util.each( styles, function( style){
-                if( !style.toString().match(/^\/\*/) ){
-                    var styleArr = style.toString().split(':'),
-                        styleName = styleArr[0],
-                        styleStr = styleArr[1]
-
-
-                    outputRef.dom.style[styleName] = styleStr
-                }
-            })
-        }
-        if( !layer.isVisible()){
-            outputRef.dom.css('display','none')
-        }
-
-        //4. if generator still have work to do with styles.
         domGenerators[generatorName].css( outputRef.dom, layer)
 
         outputRef.dom.data('sketch-kind', kind )
         outputRef.dom.data('title', layer.name())
+    }
 
+    function setup_rect_for_dom( dom, layer ){
+        dom.style.position = "absolute"
+        if( get_kind(layer.parentGroup()) == 'LayerGroup' ){
+            dom.style.left = layer.absoluteRect().rulerX() - layer.parentGroup().absoluteRect().rulerX()
+            dom.style.top = layer.absoluteRect().rulerY() - layer.parentGroup().absoluteRect().rulerY()
+        }else{
+            dom.style.left = layer.absoluteRect().rulerX()
+            dom.style.top = layer.absoluteRect().rulerY()
+        }
+
+        dom.style.width =  layer.absoluteRect().width()
+        dom.style.height =  layer.absoluteRect().height()
+        if( !layer.isVisible()){
+            dom.css('display','none')
+        }
     }
 
     function sanitize_filename(name){
@@ -243,46 +226,39 @@ var Binding = Binding || (function(){
 
     function get_kind( layer) {
         var _class = layer.className(),
-            _isShape = /^MS\w*Shape$/.test(_class),
             _kind = "Other",
             _path;
-
-        if (_class.indexOf("MSText") !== -1) { // text layer
+        if ( _class == "MSTextLayer" ) { // text layer
             _kind = "Text";
-        } else if (_class.indexOf("MSBitmap") !== -1) { // text layer
+        } else if ( _class == "MSArtboardGroup") { // text layer
+            _kind = "Artboard"
+        } else if ( _class == "MSSliceLayer") { // text layer
+            _kind = "Slice";
+        } else if (_class == "MSBitmapLayer" ) { // text layer
             _kind = "Bitmap";
-        } else if (_isShape) { // any shape layer
-            _kind = _class.replace("MS", "").replace("Shape", "");
-        } else if (_class === "MSShapePathLayer") { // shape path layer
-            _path = layer.path(); // get the layer path
-            if (_path.isLine()) { // check with the path method
-                _kind = "Line";
-            } else if (_path.isRectangle()) { // check with the path method
-                _kind = "Rectangle";
-            } else if (_path.isPolygon()) { // check with the path method
-                _kind = "Polygon";
-            } else {
-                _kind = "Vector";
-            }
-        } else if (_class.indexOf("Group") !== -1) { // group layer
-            if ( layer.children().count() === 2 && !layer.parentOrSelfIsSymbol()) {
-
+        } else if (_class == "MSShapeGroup" ) { // group layer or shape layer
+            if( layer.children().count() == 2 ){
                 var _lay = layer.children()[0],
                     _class1 = _lay.className().toString(),
-                    _isShape1 = /^MS\w*Shape$/.test(_class1);
+                    _isSpecificShape1 = /^MS\w*Shape$/.test(_class1)
 
-                if (_class1.indexOf("MSShapePath") !== -1) { // shape path
+
+                if (_class1 == "MSShapePathLayer") { // shape path
                     _path = _lay.path(); // get the path on the layer
                     if (_path.isLine()) { // check with the path method
                         _kind = "Line";
+                    }else{
+                        _kind = "Vector"
                     }
-                } else if (_isShape1) {
+                } else if (_isSpecificShape1) {
                     _kind = _class1.replace("MS", "").replace("Shape", "");
                 }
-            } else {
-                _kind = _class.replace("MS", ""); // get the class name without "MS"
+            }else{
+                _kind = "ShapeGroup"
             }
 
+        }else if( _class== "MSLayerGroup" ){
+            _kind  = "LayerGroup"
         }
 
         return _kind;
@@ -322,6 +298,8 @@ var Binding = Binding || (function(){
         return Util.in_array( classes, layer.className().toString() )
     }
 
+
+
     function noop(){}
 
     return {
@@ -336,7 +314,8 @@ var Binding = Binding || (function(){
         is_group : is_group,
         is_array : is_array,
         is_folder : is_folder,
-        get_kind : get_kind
+        get_kind : get_kind,
+        setup_rect_for_dom:setup_rect_for_dom
     }
 })()
 
