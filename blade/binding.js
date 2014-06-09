@@ -61,7 +61,7 @@ var Binding = Binding || (function(){
      * @return {object|undefined} parentOutputRef - notice that we will always return parentOutputRef.
      */
     function apply_bindings( layer, parentOutputRef, bindings ){
-        Util.log("apply_bindings for "+ layer.name()+" : "+get_kind(layer) + " : " + layer.className() )
+//        Util.log("apply_bindings for "+ layer.name()+" : "+get_kind(layer) + " : " + layer.className() )
         if( !is_layer( layer) ){
             Util.log("please pass a layer as first argument.")
             return
@@ -276,6 +276,17 @@ var Binding = Binding || (function(){
         current.styles = current.styles.concat( child.styles)
     }
 
+    function get_styles( layer ){
+        var styles = {},
+            borders = layer.style.borders().array(),
+            fills = layer.style.fills().array(),
+            shadows =layer.style.shadows().array(),
+            innerShadows =layer.style.innerShadows().array()
+
+        //TODO
+        return styles
+    }
+
 
 
     function is_group(layer) {
@@ -315,7 +326,9 @@ var Binding = Binding || (function(){
         is_array : is_array,
         is_folder : is_folder,
         get_kind : get_kind,
-        setup_rect_for_dom:setup_rect_for_dom
+        setup_rect_for_dom:setup_rect_for_dom,
+        get_styles : get_styles,
+        domGenerators : domGenerators
     }
 })()
 

@@ -4,7 +4,7 @@
 
 var Config = Config || (function(){
 
-    var document_path = [[doc fileURL] path].split([doc displayName])[0],
+    var document_path = [[doc fileURL] path].replace( /\/[^\/]+\.sketch$/,'\/'),
         document_name = [doc displayName].replace(".sketch",""),
         target_folder = document_path + document_name,
         images_folder = target_folder + "/images",
@@ -13,6 +13,8 @@ var Config = Config || (function(){
         plugin_folder = '/Users/jiamiu/Library/Application\ Support/'
             + [[[NSBundle mainBundle] infoDictionary] objectForKey:'CHApplicationSupportFolderName']
             + '/Plugins'
+
+
 
     return {
         document_path : document_path,

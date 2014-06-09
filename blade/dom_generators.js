@@ -13,18 +13,36 @@ Binding.register_dom_generator('LayerGroup',function(layer, outputRef){
 
 Binding.register_dom_generator('Text',{
     dom :function(layer, outputRef){
-        Util.log("creating tag p")
-        var dom = Dom.create('p')
-        //TODO browsers has different strategy to calculate the width of space with Sketch.
-//        dom.innerHTML = layer.stringValue().replace(/\s/g,'&nbsp;')
-        dom.innerHTML = layer.stringValue()
+
+        var needExport = false
+        if( layer.style().borders().array().count() !== 0
+            || layer.style().fills().array().count()
+            ){
+            needExport = true
+        }
+
+
+        if( !needExport ){
+            var dom = Dom.create('p')
+            //TODO browsers has different strategy to calculate the width of space with Sketch.
+            dom.innerHTML = layer.stringValue()
+        }else{
+            var dom = Dom.create('img'),
+                filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
+                ext = Config.export_img_ext
+
+            dom.attr('src', filename+ext)
+            outputRef.exportFiles.push( {layer : layer, target : filename+ext})
+        }
 
         Binding.setup_rect_for_dom( dom, layer )
-
         outputRef.dom = dom
+
+
 
     },
     css :function(dom, layer){
+        if( dom.tagName == 'img' ) return
 
         Util.extend( dom.style,{
             "font-size" : layer.fontSize(),
@@ -45,18 +63,105 @@ Binding.register_dom_generator('Text',{
         dom.style['text-align'] = align[layer.textAlignment()] ? align[layer.textAlignment()] : 'inherit'
 
         //fix browser and Sketch line-height diffrence
-        dom.style['margin-top'] = (parseInt( dom.style['line-height'] ) - parseInt( layer.fontSize() ) )/2-1 + "px"
+        dom.style['margin-top'] = (parseInt( dom.style['line-height'] ) - parseInt( layer.fontSize() ) ) + "px"
 
         dom.style['white-space'] = 'pre'
 
-        //TODO: font-family, font-weight, font-style
+        //NOT SUPPORT font-style NOW
+        var font = layer.font()
+        dom.style['font-family'] = "'"+font.familyName()+"'"
+        dom.style['font-weight'] = Number(Util.fontWeight( font) ) *100
+
+        //TODO: deal with font fill
+
     }
 })
 
-//Binding.register_dom_generator('Rectangle',function(layer, outputRef){
-//    Util.log( layer.className() + layer.hasConvertedToNewRoundCorners )
-//    return outputRef.dom = Dom.create('div')
-//})
+//due to Sketch api issue, we can not generate div for every Rectangle
+Binding.register_dom_generator('Rect',{
+    dom:function(layer, outputRef){
+        //Rectangle is the shape which will not export as a image but generate a div.
+
+        var needExport = false,
+            borders = layer.style().borders().array(),
+            fills = layer.style().fills().array(),
+            i= 0,fillsCount = fills.count(),
+            dom
+
+        if( borders.count() > 1 ){
+            Util.log("borders count > 1")
+            needExport = true
+        }
+
+        for( ;i<fillsCount; i++){
+            if( fills[i].fillType == 4  ){
+                Util.log("fillType == 4")
+
+                needExport= true;
+                break;
+            }
+        }
+
+        if( needExport ){
+            dom = Dom.create('img')
+            var  filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
+                ext = Config.export_img_ext
+
+            dom.attr('src', filename+ext)
+            outputRef.exportFiles.push( {layer : layer, target : filename+ext})
+        }else{
+            dom = Dom.create('div')
+        }
+
+        Binding.setup_rect_for_dom( dom, layer )
+        outputRef.dom = dom
+    },
+    css : function(dom, layer) {
+        if( dom.tagName == "img") return
+
+        var borders = layer.style().borders().array(),
+            fills = layer.style().fills().array(),
+            shadows = layer.style().shadows(),
+            innerShadows = layer.style().innerShadows()
+
+        if( borders.count() == 1 && borders.objectAtIndex(0).isEnabled()){
+            dom.style['border'] = borders.objectAtIndex(0).thickness() +"px solid " + Util.toRGBA( borders.objectAtIndex(0).color() )
+        }
+        if( fills.count() > 0 ){
+            var backgrounds = []
+            Util.each( fills, function(fill){
+                if( fill.isEnabled() == 1 ){
+                    backgrounds.push( Util.toRGBA( fill.color()))
+                }
+            })
+            backgrounds.length && ( dom.style['background'] = backgrounds.join(',') )
+        }
+
+        if( shadows.count() + innerShadows.count() > 0 ){
+            var shadowStyles = []
+            Util.each( shadows, function( shadow){
+                if( !shadow.isEnabled() ) return
+
+                shadowStyles.push(
+                        [shadow.offsetX(),shadow.offsetY(),shadow.blurRadius(),shadow.spread()].map(function(i){
+                            return i+"px"
+                        }).join(' ') + " " + Util.toRGBA( shadow.color())
+                )
+            })
+
+            Util.each( innerShadows, function( innerShadow){
+                if( !innerShadow.isEnabled() ) return ;
+
+                shadowStyles.push(
+                        "inset " + [innerShadow.offsetX(),innerShadow.offsetY(),innerShadow.blurRadius(),innerShadow.spread()].map(function(i){
+                        return i+"px"
+                    }).join(' ') + " " + Util.toRGBA( innerShadow.color())
+                )
+            })
+            shadowStyles.length && ( dom.style['box-shadow'] = shadowStyles.join(','))
+        }
+    }
+})
 
 Binding.register_dom_generator('default',function(layer,outputRef){
     var dom = Dom.create('img'),

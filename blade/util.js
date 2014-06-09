@@ -335,7 +335,8 @@ var Util = Util || (function() {
         var cache = {}
 
         return function( str ){
-            str = str.replace("-","_")
+
+            str = str ? str.replace("-","_") : 'noname'
 
             if( !cache[str] ){
                 cache[str] = 1
@@ -346,6 +347,28 @@ var Util = Util || (function() {
             }
         }
     })()
+
+    var fontManager = [NSFontManager sharedFontManager]
+
+    my.fontWeight = function( font ){
+        return fontManager.weightOfFont(font)
+    }
+
+    my.toRGBA = function( color ){
+        return 'rgba(' + String( color ).replace(/[\(\)]/g,'').split(' ').map(function(v){
+            var t = v.split(":"),type = t[0],value=t[1]
+            if( type !== 'a' ){
+                return Math.round( Number(value) * 256)
+            }
+            return Number(value)
+        }).join(',')+')'
+    }
+
+    my.style_to_string = function( styleObj ){
+        return join( map( styleObj, function( styles ){
+            return join( styles, ":",';\n')
+        }), ' {\n', '\n}\n') + '\n}'
+    }
 
     function join( obj, kvSplitor, itemSplitor ){
         if( typeof obj !== 'object') return false
@@ -395,7 +418,7 @@ var Util = Util || (function() {
     function each( obj, iterator ){
         var i,length
 
-        if( obj.className && /Array/.test( obj.className() )){
+        if( obj.count && obj.className ){
             length = [obj count]
 
             for( i=0;i<length;i++){

@@ -15,6 +15,9 @@
 #import 'blade/bindings/ignore.js'
 #import 'blade/bindings/hover.js'
 #import 'blade/bindings/case.js'
+#import 'blade/bindings/text.js'
+#import 'blade/bindings/button.js'
+#import 'blade/bindings/a.js'
 
 
 function export_as_img( layer, filename ){
@@ -80,7 +83,7 @@ function output( processResult ){
             }
             stylesCache[styleObj.href] = true
         }else{
-            styleStr += ['/* '+styleObj.comment+' */', Util.join(styleObj.style,":",";") ,''].join('\n')
+            styleStr += ['/* '+styleObj.comment+' */', Util.style_to_string(styleObj.style) ,''].join('\n')
         }
     })
     if( styleStr ){
@@ -94,7 +97,7 @@ function output( processResult ){
     //4. Export images
     if( processResult.exportFiles ){
         Util.each( processResult.exportFiles, function( fileObj ){
-            Util.log("exporting "+fileObj.target)
+//            Util.log("exporting "+fileObj.target)
             export_as_img( fileObj.layer, fileObj.target )
         })
     }
@@ -121,7 +124,7 @@ function main() {
         })
 
         //2. output files
-        Util.log( processResult.dom.outerHTML )
+//        Util.log( processResult.dom.outerHTML )
         output( processResult )
 
         var end = new Date().getTime()
