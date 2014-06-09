@@ -2,8 +2,6 @@
  * Created by jiamiu on 14-5-19.
  */
 
-#import 'blade/util.js'
-
 var Dom = Dom || (function(){
 
 

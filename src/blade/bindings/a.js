@@ -1,13 +1,6 @@
 /**
- * Created by jiamiu on 14-5-19.
- */
-
-/**
  * Created by jiamiu on 14-6-5.
  */
-#import 'blade/util.js'
-#import 'blade/binding.js'
-#import 'blade/dom.js'
 
 Binding.registry('a',{
     compose: function(  layer, args, outputRef  ){

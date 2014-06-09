@@ -1,16 +1,16 @@
-// Sketch blade (ctrl  command b)
 
-/* Import the variables and complain if they are undefined */
+/*
+//Import the variables and complain if they are undefined
 #import 'blade/config.js'
 #import 'blade/sandbox.js'
 #import 'blade/util.js'
 #import 'blade/binding.js'
 #import 'blade/dom.js'
 
-/* Import dom generators*/
+//Import dom generators
 #import 'blade/dom_generators.js'
 
-/* Import all bindings*/
+//Import all bindings
 #import 'blade/bindings/default.js'
 #import 'blade/bindings/ignore.js'
 #import 'blade/bindings/hover.js'
@@ -20,6 +20,7 @@
 #import 'blade/bindings/a.js'
 #import 'blade/bindings/center.js'
 #import 'blade/bindings/width.js'
+*/
 
 
 function export_as_img( layer, filename ){

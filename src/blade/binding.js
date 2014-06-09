@@ -1,15 +1,11 @@
 /**
  * Created by jiamiu on 14-5-19.
  */
-#import 'blade/util.js'
-#import 'blade/dom.js'
-#import 'blade/config.js'
 
 var Binding = Binding || (function(){
     var ObjectId = 0
 
     var bindingImp = {}
-
 
     /**
      * @param {string} name

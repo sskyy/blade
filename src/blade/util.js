@@ -11,9 +11,6 @@
 // --------------------------------------------------------------------------
 
 
-#import 'blade/sandbox.js'
-#import 'blade/config.js'
-
 var Util = Util || (function() {
     var my = {};
 

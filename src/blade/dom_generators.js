@@ -1,8 +1,6 @@
 /**
  * Created by jiamiu on 14-5-21.
  */
-#import 'blade/binding.js'
-#import 'blade/dom.js'
 
 
 Binding.register_dom_generator('LayerGroup',function(layer, outputRef){

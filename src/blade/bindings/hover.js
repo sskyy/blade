@@ -1,8 +1,6 @@
 /**
  * Created by jiamiu on 14-5-19.
  */
-#import 'blade/util.js'
-#import 'blade/binding.js'
 
 Binding.registry('hover',function(  layer, args, outputRef  ){
 //    if( !Binding.is_group( layer) ){

@@ -1,9 +1,6 @@
 /**
  * Created by jiamiu on 14-6-5.
  */
-#import 'blade/util.js'
-#import 'blade/binding.js'
-#import 'blade/dom.js'
 
 Binding.registry('text',{
     compose: function(  layer, args, outputRef  ){
