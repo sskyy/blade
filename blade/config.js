@@ -35,7 +35,7 @@ var Config = Config || (function(){
             href : css_folder + '/reset.css'
         }],
         export_img_ext : ".png",
-        show_error : true
+        show_error : false
 
     }
 })()
