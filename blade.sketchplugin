@@ -18,6 +18,8 @@
 #import 'blade/bindings/text.js'
 #import 'blade/bindings/button.js'
 #import 'blade/bindings/a.js'
+#import 'blade/bindings/center.js'
+#import 'blade/bindings/width.js'
 
 
 function export_as_img( layer, filename ){

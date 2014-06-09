@@ -167,7 +167,7 @@ var Binding = Binding || (function(){
     }
 
     function get_bindings( name ){
-        var matches = name.match(/\[([\w,-:=]*)\]/g),
+        var matches = name.match(/\[([\w\d%_,-:=]*)\]/g),
             bindings = {}
 
         if( matches ){
