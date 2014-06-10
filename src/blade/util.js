@@ -364,28 +364,29 @@ var Util = Util || (function() {
     }
 
     function map( obj, cb ){
-        var output
         if( Object.prototype.toString.call(obj) == '[object Array]'){
-            output = []
+            return obj.map(cb)
         }else if( typeof obj == 'object' ){
-            output = {}
-        }else{
-            return false
+            var output = {}
+            for( var i in obj ){
+                if( obj.hasOwnProperty(i) && typeof obj[i] !== 'function' ) {
+                    output[i] = cb(obj[i], i)
+                }
+            }
+            return output
         }
 
-        for( var i in obj ){
-            if( obj.hasOwnProperty(i) && typeof obj[i] !== 'function' ) {
-                output[i] = cb(obj[i], i)
-            }
-        }
-        return output
+        return false
     }
 
     function values( obj ) {
         var _values = []
-        map(obj,function(v){
-            _values.push(v)
-        })
+
+        for( var i in obj ){
+            if( obj.hasOwnProperty(i) && typeof obj[i] !== 'function' ) {
+                _values.push( obj[i] )
+            }
+        }
         return _values
     }
 
