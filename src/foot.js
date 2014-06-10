@@ -1,26 +1,4 @@
 
-/*
-//Import the variables and complain if they are undefined
-#import 'blade/config.js'
-#import 'blade/sandbox.js'
-#import 'blade/util.js'
-#import 'blade/binding.js'
-#import 'blade/dom.js'
-
-//Import dom generators
-#import 'blade/dom_generators.js'
-
-//Import all bindings
-#import 'blade/bindings/default.js'
-#import 'blade/bindings/ignore.js'
-#import 'blade/bindings/hover.js'
-#import 'blade/bindings/case.js'
-#import 'blade/bindings/text.js'
-#import 'blade/bindings/button.js'
-#import 'blade/bindings/a.js'
-#import 'blade/bindings/center.js'
-#import 'blade/bindings/width.js'
-*/
 
 
 function export_as_img( layer, filename ){
@@ -107,6 +85,7 @@ function output( processResult ){
 
     //5. Save html
     Util.save_file_from_string(Config.target_folder + "/index.html", processResult.dom.outerHTML);
+//    Util.save_file_from_string(Config.target_folder + "/index.html", processResult.dom.outerHTML());
 }
 
 

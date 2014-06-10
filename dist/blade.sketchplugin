@@ -4,202 +4,109 @@
  * Authorized by Jiamiu, all rights reserved.
  */
 
-/*
-This is a port to JSTalk of <https://github.com/leighmcculloch/AppSandboxFileAccess>
+var environ = [[NSProcessInfo processInfo] environment],
+    in_sandbox= (nil != [environ objectForKey:@"APP_SANDBOX_CONTAINER_ID"])
 
-Here's the original license for AppSandboxFileAccess:
-
-## License
-
-Copyright (c) 2013, Leigh McCulloch All rights reserved.
-
-BSD-2-Clause License: http://opensource.org/licenses/BSD-2-Clause
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-- Redistributions of source code must retain the above copyright notice,
-  this list of conditions and the following disclaimer.
-
-- Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-var AppSandboxFileAccessPersist = {
-  keyForBookmarkDataForURL: function(url) {
-    log("AppSandboxFileAccessPersist.keyForBookmarkDataForURL("+url+")")
-    var urlStr = [url absoluteString];
-    log("> " + [NSString stringWithFormat:@"bd_%1$@", urlStr])
-    return [NSString stringWithFormat:@"bd_%1$@", urlStr];
-  },
-  bookmarkDataForURL: function(url) {
-    log("AppSandboxFileAccessPersist.bookmarkDataForURL('"+ url +"')")
-    var defaults = [NSUserDefaults standardUserDefaults];
-
-    // loop through the bookmarks one path at a time down the URL
-    var subUrl = url;
-    while ([subUrl path].length() > 1) { // give up when only '/' is left in the path
-      var key = AppSandboxFileAccessPersist.keyForBookmarkDataForURL(subUrl);
-      var bookmark = [defaults dataForKey:key];
-      if (bookmark) { // if a bookmark is found, return it
-        return bookmark;
-      }
-      subUrl = [subUrl URLByDeletingLastPathComponent];
-    }
-    // no bookmarks for the URL, or parent to the URL were found
-    return nil;
-  },
-  setBookmarkData: function(data, url) {
-    log("AppSandboxFileAccessPersist.setBookmarkData")
-    log("data: " + data)
-    log("URL: " + url)
-    var defaults = [NSUserDefaults standardUserDefaults];
-    var key = AppSandboxFileAccessPersist.keyForBookmarkDataForURL(url);
-    [defaults setObject:data forKey:key];
-  }
+if(in_sandbox){
+    print("We’re sandboxed: here be dragons")
 }
 
-var AppSandboxFileAccess = {
-  init: function(opts){
-    this.message = opts.message || "Please authorize Sketch to write to this folder. You will only need to do this once."
-    this.prompt = opts.prompt || "Authorize",
-    this.title = opts.title || "Sketch Authorization"
-    return this;
-  },
-  askPermissionForUrl: function(url) {
-    log("AppSandboxFileAccess.askPermissionForUrl("+url+")")
-    // this url will be the url allowed, it might be a parent url of the url passed in
-    var allowedUrl;
+AppSandbox = function(){ }
+AppSandbox.prototype.authorize = function(path, callback){
+    log("AppSandbox.authorize("+path+")")
+    var success = false
 
-    // create delegate that will limit which files in the open panel can be selected, to ensure only a folder
-    // or file giving permission to the file requested can be selected
-    // AppSandboxFileAccessOpenSavePanelDelegate *openPanelDelegate = [[AppSandboxFileAccessOpenSavePanelDelegate alloc] initWithFileURL:url];
+    if (in_sandbox) {
+        var url = [[[NSURL fileURLWithPath:path] URLByStandardizingPath] URLByResolvingSymlinksInPath],
+        allowedUrl = false
 
-    // check that the url exists, if it doesn't, find the parent path of the url that does exist and ask permission for that
-    var fileManager = [NSFileManager defaultManager];
-    var path = [url path];
-    while (path.length() > 1) { // give up when only '/' is left in the path or if we get to a path that exists
-      if ([fileManager fileExistsAtPath:path]) {
-        break;
-      }
-      path = [path stringByDeletingLastPathComponent];
-    }
-    log("Looks like we have a winner: " + path)
-    url = [NSURL fileURLWithPath:path];
+        // Key for bookmark data:
+        var bd_key = this.key_for_url(url)
 
-    // display the open panel
-    var openPanel = [NSOpenPanel openPanel];
-    [openPanel setMessage:this.message];
-    [openPanel setPrompt:this.prompt];
-    [openPanel setTitle:this.title];
-    // [openPanel setDelegate:openPanelDelegate];
-    [openPanel setCanCreateDirectories:false];
-    [openPanel setCanChooseFiles:true];
-    [openPanel setCanChooseDirectories:true];
-    [openPanel setAllowsMultipleSelection:false];
-    [openPanel setShowsHiddenFiles:false];
-    [openPanel setExtensionHidden:false];
-    [openPanel setDirectoryURL:url];
-    [[NSApplication sharedApplication] activateIgnoringOtherApps:true];
-    var openPanelButtonPressed = [openPanel runModal];
-    if (openPanelButtonPressed == NSFileHandlingPanelOKButton) {
-      allowedUrl = [openPanel URL];
-    }
-    return allowedUrl;
-  },
-  persistPermissionPath: function(path) {
-    this.persistPermissionURL([NSURL fileURLWithPath:path]);
-  },
-  persistPermissionURL: function(url) {
-    log("AppSandboxFileAccess.persistPermissionURL("+url+")")
-    // store the sandbox permissions
-    url = [[url URLByStandardizingPath] URLByResolvingSymlinksInPath]
-    var bookmarkData = [url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope
-                           includingResourceValuesForKeys:nil
-                           relativeToURL:nil
-                           error:null];
-    if (bookmarkData) {
-      AppSandboxFileAccessPersist.setBookmarkData(bookmarkData, url);
-    }
-  },
-  accessFilePath_withBlock_persistPermission: function(path, block, persist) {
-    log("AppSandboxFileAccess.accessFilePath_withBlock_persistPermission")
-    log("path: " + path)
-    return AppSandboxFileAccess.accessFileURL_withBlock_persistPermission([NSURL fileURLWithPath:path], block, persist);
-  },
-  accessFileURL_withBlock_persistPermission: function(fileUrl, block, persist) {
-    log("AppSandboxFileAccess.accessFileURL_withBlock_persistPermission")
-    log("fileUrl: " + fileUrl)
-    log("block: " + block)
-    log("persist: " + persist)
-    var allowedUrl = false;
-    // standardize the file url and remove any symlinks so that the url we lookup in bookmark data would match a url given by the askPermissionForUrl method
-    var fileUrl = [[fileUrl URLByStandardizingPath] URLByResolvingSymlinksInPath];
-    // lookup bookmark data for this url, this will automatically load bookmark data for a parent path if we have it
-    var bookmarkData = AppSandboxFileAccessPersist.bookmarkDataForURL(fileUrl);
+        // this.clear_key(bd_key) // For debug only, this clears the key we're looking for :P
 
-    if (bookmarkData) {
-      log("Bookmark data found")
-      // resolve the bookmark data into an NSURL object that will allow us to use the file
-      var bookmarkDataIsStale;
-      allowedUrl = [NSURL URLByResolvingBookmarkData:bookmarkData options:NSURLBookmarkResolutionWithSecurityScope|NSURLBookmarkResolutionWithoutUI relativeToURL:nil bookmarkDataIsStale:bookmarkDataIsStale error:null];
-      // if the bookmark data is stale, we'll create new bookmark data further down
-      if (bookmarkDataIsStale) {
-        bookmarkData = nil;
-      }
+        // Bookmark
+        var bookmark = this.get_data_for_key(bd_key)
+        if(!bookmark){
+            log("– No bookmark found, let's create one")
+            var target = this.file_picker(url)
+            bookmark = [target bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope
+            includingResourceValuesForKeys:nil
+            relativeToURL:nil
+            error:{}]
+            // Store bookmark
+            this.set_data_for_key(bookmark,bd_key)
+        } else {
+            log("– Bookmark found")
+        }
+        log("  " + bookmark)
+
+        // Thanks to @joethephish for this pointer (pun totally intended)
+        var bookmarkDataIsStalePtr = MOPointer.alloc().init()
+        var allowedURL = [NSURL URLByResolvingBookmarkData:bookmark
+        options:NSURLBookmarkResolutionWithSecurityScope
+        relativeToURL:nil
+        bookmarkDataIsStale:bookmarkDataIsStalePtr
+        error:{}]
+
+        if(bookmarkDataIsStalePtr.value() != 0){
+            log("— Bookmark data is stale")
+            log(bookmarkDataIsStalePtr.value())
+        }
+
+        if(allowedURL) {
+            success = true
+        }
     } else {
-      log("No bookmark data found")
+        success = true
     }
 
-    // if allowed url is nil, we need to ask the user for permission
-    if (!allowedUrl) {
-      allowedUrl = AppSandboxFileAccess.askPermissionForUrl(fileUrl);
-      if (!allowedUrl) {
-        // if the user did not give permission, exit out here
-        return false;
-      }
-    }
-    // if we have no bookmark data, we need to create it, this may be because our bookmark data was stale, or this is the first time being given permission
-    if (persist && !bookmarkData) {
-      AppSandboxFileAccess.persistPermissionURL(allowedUrl);
-    }
-    // execute the block with the file access permissions
-    try {
-      [allowedUrl startAccessingSecurityScopedResource];
-      block();
-    } finally {
-      [allowedUrl stopAccessingSecurityScopedResource];
-    }
-    return true;
-  }
+    // [allowedUrl startAccessingSecurityScopedResource]
+    callback.call(this,success)
+    // [allowedUrl stopAccessingSecurityScopedResource]
 }
-function in_sandbox(){
-  var environ = [[NSProcessInfo processInfo] environment];
-  return (nil != [environ objectForKey:@"APP_SANDBOX_CONTAINER_ID"]);
+AppSandbox.prototype.key_for_url = function(url){
+    return "bd_" + [url absoluteString]
 }
-var sandboxAccess = AppSandboxFileAccess.init({
-  message: "Please authorize Sketch to write to this folder. You will only need to do this once per folder.",
-  prompt:  "Authorize",
-  title: "Sketch Authorization"
-})
+AppSandbox.prototype.clear_key = function(key){
+    var def = [NSUserDefaults standardUserDefaults]
+        [def setObject:nil forKey:key]
+}
+AppSandbox.prototype.file_picker = function(url){
+    // Panel
+    var openPanel = [NSOpenPanel openPanel]
 
+        [openPanel setTitle:"Sketch Framer Authorization"]
+    [openPanel setMessage:"Due to Apple's Sandboxing technology, Sketch needs your permission to write to this folder."];
+    [openPanel setPrompt:"Authorize"];
 
-if ( in_sandbox()) {
-  [[NSApplication sharedApplication] displayDialog:"Please use this plugin with Sketch Beta. You can search 'Sketch Beta' in Google to download it.\n\n(Or manually copy framer.js info the framer folder)." withTitle:"Sketch Framer known bugs"]
+    [openPanel setCanCreateDirectories:false]
+    [openPanel setCanChooseFiles:true]
+    [openPanel setCanChooseDirectories:true]
+    [openPanel setAllowsMultipleSelection:false]
+    [openPanel setShowsHiddenFiles:false]
+    [openPanel setExtensionHidden:false]
+
+    [openPanel setDirectoryURL:url]
+
+    var openPanelButtonPressed = [openPanel runModal]
+    if (openPanelButtonPressed == NSFileHandlingPanelOKButton) {
+        allowedUrl = [openPanel URL]
+    }
+    return allowedUrl
 }
 
+AppSandbox.prototype.get_data_for_key = function(key){
+    var def = [NSUserDefaults standardUserDefaults]
+    return [def objectForKey:key]
+}
+AppSandbox.prototype.set_data_for_key = function(data,key){
+    var defaults = [NSUserDefaults standardUserDefaults],
+        default_values = [NSMutableDictionary dictionary]
+
+            [default_values setObject:data forKey:key]
+    [defaults registerDefaults:default_values]
+}
 /**
  * Created by jiamiu on 14-5-19.
  */
@@ -209,13 +116,11 @@ var Config = Config || (function(){
     var document_path = [[doc fileURL] path].replace( /\/[^\/]+\.sketch$/,'\/'),
         document_name = [doc displayName].replace(".sketch",""),
         target_folder = document_path + document_name,
+        home_folder = "/Users/" + NSUserName(),
         images_folder = target_folder + "/images",
         css_folder = target_folder + "/css",
         js_folder = target_folder + "/js",
-        plugin_folder = '/Users/jiamiu/Library/Application\ Support/'
-            + [[[NSBundle mainBundle] infoDictionary] objectForKey:'CHApplicationSupportFolderName']
-            + '/Plugins'
-
+        plugin_folder = sketch.scriptPath.replace('/\/blade.sketchplugin$/','')
 
 
     return {
@@ -223,6 +128,7 @@ var Config = Config || (function(){
         document_name : document_name,
         target_folder : target_folder,
         images_folder : images_folder,
+        home_folder : home_folder,
         js_folder : js_folder,
         css_folder : css_folder,
         plugin_folder : plugin_folder,
@@ -237,13 +143,11 @@ var Config = Config || (function(){
             href : css_folder + '/reset.css'
         }],
         export_img_ext : ".png",
-        show_error : true
+        show_error : false
 
     }
 })()
 
-
-/* Created by jiamiu on 14-5-19. */
 
 //This file is base on Sam Deane's code, see the original license below
 
@@ -257,16 +161,7 @@ var Config = Config || (function(){
 
 
 var Util = Util || (function() {
-    var my = {};
-
-    // it's helpful to have somewhere to store values in a way that will persist across invocations of
-    // the script, so you can store something on one run, and pick it up again on the next
-    // as luck would have it, there's a dictionary associated with each thread, so we can use the main thread's
-    // dictionary to keep out persistent values in
-    var persistent = [[NSThread mainThread] threadDictionary];
-
-    // an example of something we might want to persist is the contents of the console
-    var console = persistent["console"];
+    var my = {},persistent,console
 
     // perform a come code inside a try/catch block, and log out the error if something goes wrong
     my.execute = function(block) {
@@ -475,30 +370,37 @@ var Util = Util || (function() {
     // we set the window up first if necessary, then
     // append the log message to the bottom of it and scroll the new line into view
     my.log = function(message) {
-        if( !Config.show_error ) return
+        if( !Config.show_error ){
+            return
+        }else{
+            //first time
+            if( !persistent ){
+                persistent = [[NSThread mainThread] threadDictionary]
+                console = persistent["console"]
+            }
 
-        if( arguments.length !== 1 ){
-            message = Array.prototype.join.call( arguments, ", " )
+            if( arguments.length !== 1 ){
+                message = Array.prototype.join.call( arguments, ", " )
+            }
+
+            var logWindow = my.logWindow();
+            [logWindow makeKeyAndOrderFront:nil];
+
+            var text = message;
+            //var text = JSON.stringify(message);
+
+            view = [[logWindow contentView] documentView];
+            if (console == null)
+                console = "";
+
+            var now = new Date();
+            var time = now.toLocaleTimeString().split(" ")[0];
+            console = console + time + " " + text + "\n";
+            [view setString:console];
+            log(text);
+            persistent["console"] = console;
+            [view scrollRangeToVisible: NSMakeRange(view.string.length, 0)];
         }
-
-        var logWindow = my.logWindow();
-        [logWindow makeKeyAndOrderFront:nil];
-
-        var text = message;
-        //var text = JSON.stringify(message);
-
-        view = [[logWindow contentView] documentView];
-        if (console == null)
-            console = "";
-
-        var now = new Date();
-        var time = now.toLocaleTimeString().split(" ")[0];
-        console = console + time + " " + text + "\n";
-        [view setString:console];
-        log(text);
-        persistent["console"] = console;
-        [view scrollRangeToVisible: NSMakeRange(view.string.length, 0)];
-
     };
 
     my.launch = function(cmd, arguments) {
@@ -521,27 +423,27 @@ var Util = Util || (function() {
         log(output);
     };
 
-    my.save_file_from_string = function(filename,the_string) {
-        var path = [@"" stringByAppendingString:filename],
-        str = [@"" stringByAppendingString:the_string];
+    my.save_file_from_string = function(filename, fileString) {
+        new AppSandbox().authorize( Config.home_folder, function() {
+            var path = [@"" stringByAppendingString:filename],
+            str = [@"" stringByAppendingString:fileString];
+//            var str = [[[NSString alloc] initWithString:fileString] autorelease]
 
-        if (in_sandbox()) {
-            sandboxAccess.accessFilePath_withBlock_persistPermission(filename, function(){
-                [str writeToFile:path atomically:true encoding:NSUTF8StringEncoding error:null];
-            }, true)
-        } else {
+//            fileString = null
+
             [str writeToFile:path atomically:true encoding:NSUTF8StringEncoding error:null];
-        }
+        })
     }
 
     var file_manager = [NSFileManager defaultManager]
 
     my.create_folders =function ( folders ){
-        var i = [folders count] - 1
-
-        for( ; i >-1 ;i-- ){
-            [file_manager createDirectoryAtPath:[folders objectAtIndex:i] withIntermediateDirectories:true attributes:nil error:nil];
-        }
+        new AppSandbox().authorize( Config.home_folder, function(){
+            var i = [folders count] - 1
+            for( ; i >-1 ;i-- ){
+                [file_manager createDirectoryAtPath:[folders objectAtIndex:i] withIntermediateDirectories:true attributes:nil error:nil];
+            }
+        })
     }
 
     my.remove_folder = function( folder ){
@@ -558,14 +460,6 @@ var Util = Util || (function() {
         Util.log( 'from: ' + org )
         Util.log( 'to  : ' + tar )
 
-//        var info  =  [[NSBundle mainBundle] infoDictionary]
-//
-////        Util.log( info.className())
-//
-//        for( var i in info ){
-//            Util.log("==="+i+"======:")
-//            Util.log( [info objectForKey:i])
-//        }
         if( [file_manager fileExistsAtPath:org]){
             [file_manager copyItemAtPath:org toPath:tar error:nil];
         }else{
@@ -876,6 +770,27 @@ var Dom = Dom || (function(){
         return this
     }
 
+//    E.prototype.outerHTML = function(){
+//
+//        var selfClose = ['input','img','textarea','link']
+//
+//        if( selfClose.indexOf(this.tagName ) != -1 ){
+//            return '<' + generate_tag_head(this) + ' />'
+//        }else{
+//            if( this.childNodes.length == 0 ){
+//                return '<' + generate_tag_head(this) + ' >' + this.innerHTML + '</'+this.tagName + '>'
+//            }else{
+//
+//                var childHTMl = this.childNodes.map(function( child ){
+//                    return child.outerHTML()
+//                }).join('')
+//
+//                return  '<' + generate_tag_head(this) + ' >' + childHTMl + '</'+this.tagName + '>'
+//            }
+//
+//        }
+//    }
+
     Object.defineProperty(E.prototype,"outerHTML",{
         get : function(){
             var selfClose = ['input','img','textarea','link']
@@ -886,14 +801,28 @@ var Dom = Dom || (function(){
                 if( this.childNodes.length == 0 ){
 
                     return '<' + generate_tag_head(this) + ' >' + this.innerHTML + '</'+this.tagName + '>'
-
+//                    var output ='<' + generate_tag_head(this) + ' >' + this.innerHTML + '</'+this.tagName + '>'
+//
+//                    return [[NSString alloc] initWithString :output]
                 }else{
 
                     var childHTMl = this.childNodes.map(function( child ){
                         return child.outerHTML
                     }).join('')
 
-                    return '<' + generate_tag_head(this) + ' >' + childHTMl + '</'+this.tagName + '>'
+                    return  '<' + generate_tag_head(this) + ' >' + childHTMl + '</'+this.tagName + '>'
+
+//                      var head = '<' + generate_tag_head(this) + ' >',
+//                          output = [NSMutableString stringWithString:head];
+//
+//                    for( var i in this.childNodes ){
+//                        var childOutput = this.childNodes[i].outerHTML
+//                        [output appendString:childOutput]
+//                        Util.log( childOutput, output)
+//                        [childOutput release]
+//                    }
+//
+//                    return [output appendString:@" >"]
                 }
 
             }
@@ -1437,6 +1366,22 @@ Binding.register_dom_generator('Rect',{
     }
 })
 
+Binding.register_dom_generator('Bitmap1',function(layer,outputRef){
+    var dom = Dom.create('img'),
+        filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
+        ext = Config.export_img_ext
+
+
+
+    dom.attr('src', filename+ext)
+    //export it
+    outputRef.exportFiles.push( {layer : layer, target : filename+ext})
+
+    Binding.setup_rect_for_dom( dom, layer )
+    outputRef.dom = dom
+})
+
+
 Binding.register_dom_generator('default',function(layer,outputRef){
     var dom = Dom.create('img'),
         filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
@@ -1853,28 +1798,6 @@ Binding.registry('width',{
     }
 })
 
-/*
-//Import the variables and complain if they are undefined
-#import 'blade/config.js'
-#import 'blade/sandbox.js'
-#import 'blade/util.js'
-#import 'blade/binding.js'
-#import 'blade/dom.js'
-
-//Import dom generators
-#import 'blade/dom_generators.js'
-
-//Import all bindings
-#import 'blade/bindings/default.js'
-#import 'blade/bindings/ignore.js'
-#import 'blade/bindings/hover.js'
-#import 'blade/bindings/case.js'
-#import 'blade/bindings/text.js'
-#import 'blade/bindings/button.js'
-#import 'blade/bindings/a.js'
-#import 'blade/bindings/center.js'
-#import 'blade/bindings/width.js'
-*/
 
 
 function export_as_img( layer, filename ){
@@ -1961,6 +1884,7 @@ function output( processResult ){
 
     //5. Save html
     Util.save_file_from_string(Config.target_folder + "/index.html", processResult.dom.outerHTML);
+//    Util.save_file_from_string(Config.target_folder + "/index.html", processResult.dom.outerHTML());
 }
 
 

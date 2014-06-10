@@ -126,6 +126,27 @@ var Dom = Dom || (function(){
         return this
     }
 
+//    E.prototype.outerHTML = function(){
+//
+//        var selfClose = ['input','img','textarea','link']
+//
+//        if( selfClose.indexOf(this.tagName ) != -1 ){
+//            return '<' + generate_tag_head(this) + ' />'
+//        }else{
+//            if( this.childNodes.length == 0 ){
+//                return '<' + generate_tag_head(this) + ' >' + this.innerHTML + '</'+this.tagName + '>'
+//            }else{
+//
+//                var childHTMl = this.childNodes.map(function( child ){
+//                    return child.outerHTML()
+//                }).join('')
+//
+//                return  '<' + generate_tag_head(this) + ' >' + childHTMl + '</'+this.tagName + '>'
+//            }
+//
+//        }
+//    }
+
     Object.defineProperty(E.prototype,"outerHTML",{
         get : function(){
             var selfClose = ['input','img','textarea','link']
@@ -136,14 +157,28 @@ var Dom = Dom || (function(){
                 if( this.childNodes.length == 0 ){
 
                     return '<' + generate_tag_head(this) + ' >' + this.innerHTML + '</'+this.tagName + '>'
-
+//                    var output ='<' + generate_tag_head(this) + ' >' + this.innerHTML + '</'+this.tagName + '>'
+//
+//                    return [[NSString alloc] initWithString :output]
                 }else{
 
                     var childHTMl = this.childNodes.map(function( child ){
                         return child.outerHTML
                     }).join('')
 
-                    return '<' + generate_tag_head(this) + ' >' + childHTMl + '</'+this.tagName + '>'
+                    return  '<' + generate_tag_head(this) + ' >' + childHTMl + '</'+this.tagName + '>'
+
+//                      var head = '<' + generate_tag_head(this) + ' >',
+//                          output = [NSMutableString stringWithString:head];
+//
+//                    for( var i in this.childNodes ){
+//                        var childOutput = this.childNodes[i].outerHTML
+//                        [output appendString:childOutput]
+//                        Util.log( childOutput, output)
+//                        [childOutput release]
+//                    }
+//
+//                    return [output appendString:@" >"]
                 }
 
             }

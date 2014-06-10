@@ -7,13 +7,11 @@ var Config = Config || (function(){
     var document_path = [[doc fileURL] path].replace( /\/[^\/]+\.sketch$/,'\/'),
         document_name = [doc displayName].replace(".sketch",""),
         target_folder = document_path + document_name,
+        home_folder = "/Users/" + NSUserName(),
         images_folder = target_folder + "/images",
         css_folder = target_folder + "/css",
         js_folder = target_folder + "/js",
-        plugin_folder = '/Users/jiamiu/Library/Application\ Support/'
-            + [[[NSBundle mainBundle] infoDictionary] objectForKey:'CHApplicationSupportFolderName']
-            + '/Plugins'
-
+        plugin_folder = sketch.scriptPath.replace('/\/blade.sketchplugin$/','')
 
 
     return {
@@ -21,6 +19,7 @@ var Config = Config || (function(){
         document_name : document_name,
         target_folder : target_folder,
         images_folder : images_folder,
+        home_folder : home_folder,
         js_folder : js_folder,
         css_folder : css_folder,
         plugin_folder : plugin_folder,
@@ -35,7 +34,7 @@ var Config = Config || (function(){
             href : css_folder + '/reset.css'
         }],
         export_img_ext : ".png",
-        show_error : true
+        show_error : false
 
     }
 })()

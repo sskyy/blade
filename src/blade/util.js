@@ -1,5 +1,3 @@
-/* Created by jiamiu on 14-5-19. */
-
 //This file is base on Sam Deane's code, see the original license below
 
 // --------------------------------------------------------------------------
@@ -12,16 +10,7 @@
 
 
 var Util = Util || (function() {
-    var my = {};
-
-    // it's helpful to have somewhere to store values in a way that will persist across invocations of
-    // the script, so you can store something on one run, and pick it up again on the next
-    // as luck would have it, there's a dictionary associated with each thread, so we can use the main thread's
-    // dictionary to keep out persistent values in
-    var persistent = [[NSThread mainThread] threadDictionary];
-
-    // an example of something we might want to persist is the contents of the console
-    var console = persistent["console"];
+    var my = {},persistent,console
 
     // perform a come code inside a try/catch block, and log out the error if something goes wrong
     my.execute = function(block) {
@@ -230,30 +219,37 @@ var Util = Util || (function() {
     // we set the window up first if necessary, then
     // append the log message to the bottom of it and scroll the new line into view
     my.log = function(message) {
-        if( !Config.show_error ) return
+        if( !Config.show_error ){
+            return
+        }else{
+            //first time
+            if( !persistent ){
+                persistent = [[NSThread mainThread] threadDictionary]
+                console = persistent["console"]
+            }
 
-        if( arguments.length !== 1 ){
-            message = Array.prototype.join.call( arguments, ", " )
+            if( arguments.length !== 1 ){
+                message = Array.prototype.join.call( arguments, ", " )
+            }
+
+            var logWindow = my.logWindow();
+            [logWindow makeKeyAndOrderFront:nil];
+
+            var text = message;
+            //var text = JSON.stringify(message);
+
+            view = [[logWindow contentView] documentView];
+            if (console == null)
+                console = "";
+
+            var now = new Date();
+            var time = now.toLocaleTimeString().split(" ")[0];
+            console = console + time + " " + text + "\n";
+            [view setString:console];
+            log(text);
+            persistent["console"] = console;
+            [view scrollRangeToVisible: NSMakeRange(view.string.length, 0)];
         }
-
-        var logWindow = my.logWindow();
-        [logWindow makeKeyAndOrderFront:nil];
-
-        var text = message;
-        //var text = JSON.stringify(message);
-
-        view = [[logWindow contentView] documentView];
-        if (console == null)
-            console = "";
-
-        var now = new Date();
-        var time = now.toLocaleTimeString().split(" ")[0];
-        console = console + time + " " + text + "\n";
-        [view setString:console];
-        log(text);
-        persistent["console"] = console;
-        [view scrollRangeToVisible: NSMakeRange(view.string.length, 0)];
-
     };
 
     my.launch = function(cmd, arguments) {
@@ -276,27 +272,27 @@ var Util = Util || (function() {
         log(output);
     };
 
-    my.save_file_from_string = function(filename,the_string) {
-        var path = [@"" stringByAppendingString:filename],
-        str = [@"" stringByAppendingString:the_string];
+    my.save_file_from_string = function(filename, fileString) {
+        new AppSandbox().authorize( Config.home_folder, function() {
+            var path = [@"" stringByAppendingString:filename],
+            str = [@"" stringByAppendingString:fileString];
+//            var str = [[[NSString alloc] initWithString:fileString] autorelease]
 
-        if (in_sandbox()) {
-            sandboxAccess.accessFilePath_withBlock_persistPermission(filename, function(){
-                [str writeToFile:path atomically:true encoding:NSUTF8StringEncoding error:null];
-            }, true)
-        } else {
+//            fileString = null
+
             [str writeToFile:path atomically:true encoding:NSUTF8StringEncoding error:null];
-        }
+        })
     }
 
     var file_manager = [NSFileManager defaultManager]
 
     my.create_folders =function ( folders ){
-        var i = [folders count] - 1
-
-        for( ; i >-1 ;i-- ){
-            [file_manager createDirectoryAtPath:[folders objectAtIndex:i] withIntermediateDirectories:true attributes:nil error:nil];
-        }
+        new AppSandbox().authorize( Config.home_folder, function(){
+            var i = [folders count] - 1
+            for( ; i >-1 ;i-- ){
+                [file_manager createDirectoryAtPath:[folders objectAtIndex:i] withIntermediateDirectories:true attributes:nil error:nil];
+            }
+        })
     }
 
     my.remove_folder = function( folder ){
@@ -313,14 +309,6 @@ var Util = Util || (function() {
         Util.log( 'from: ' + org )
         Util.log( 'to  : ' + tar )
 
-//        var info  =  [[NSBundle mainBundle] infoDictionary]
-//
-////        Util.log( info.className())
-//
-//        for( var i in info ){
-//            Util.log("==="+i+"======:")
-//            Util.log( [info objectForKey:i])
-//        }
         if( [file_manager fileExistsAtPath:org]){
             [file_manager copyItemAtPath:org toPath:tar error:nil];
         }else{

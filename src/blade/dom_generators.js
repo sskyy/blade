@@ -161,6 +161,22 @@ Binding.register_dom_generator('Rect',{
     }
 })
 
+Binding.register_dom_generator('Bitmap1',function(layer,outputRef){
+    var dom = Dom.create('img'),
+        filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
+        ext = Config.export_img_ext
+
+
+
+    dom.attr('src', filename+ext)
+    //export it
+    outputRef.exportFiles.push( {layer : layer, target : filename+ext})
+
+    Binding.setup_rect_for_dom( dom, layer )
+    outputRef.dom = dom
+})
+
+
 Binding.register_dom_generator('default',function(layer,outputRef){
     var dom = Dom.create('img'),
         filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
