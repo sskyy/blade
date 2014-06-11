@@ -191,5 +191,3 @@ Binding.register_dom_generator('default',function(layer,outputRef){
     Binding.setup_rect_for_dom( dom, layer )
     outputRef.dom = dom
 })
-
-

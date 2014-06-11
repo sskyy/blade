@@ -1,5 +1,4 @@
-// Sketch blade (ctrl  command b)
-
+// Sketch blade (ctrl command b)
 /**
  * Authorized by Jiamiu, all rights reserved.
  */
@@ -120,7 +119,7 @@ var Config = Config || (function(){
         images_folder = target_folder + "/images",
         css_folder = target_folder + "/css",
         js_folder = target_folder + "/js",
-        plugin_folder = sketch.scriptPath.replace('/\/blade.sketchplugin$/','')
+        plugin_folder = sketch.scriptPath.replace(/\/blade.sketchplugin$/,'')
 
 
     return {
@@ -1397,9 +1396,6 @@ Binding.register_dom_generator('default',function(layer,outputRef){
     Binding.setup_rect_for_dom( dom, layer )
     outputRef.dom = dom
 })
-
-
-
 /**
  * Created by jiamiu on 14-6-5.
  */

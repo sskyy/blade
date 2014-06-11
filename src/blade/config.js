@@ -11,7 +11,7 @@ var Config = Config || (function(){
         images_folder = target_folder + "/images",
         css_folder = target_folder + "/css",
         js_folder = target_folder + "/js",
-        plugin_folder = sketch.scriptPath.replace('/\/blade.sketchplugin$/','')
+        plugin_folder = sketch.scriptPath.replace(/\/blade.sketchplugin$/,'')
 
 
     return {
