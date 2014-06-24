@@ -33,7 +33,8 @@ function output( processResult ){
     Util.log( 'scripts length:' + scripts.length)
     Util.each( scripts, function(scriptObj){
         if( scriptObj.src && !scriptsCache[scriptObj.src]){
-            var scriptNode = Dom.create('script').attr('src',scriptObj.src)
+            var src = scriptObj.src.replace(Config.target_folder+'/',''),
+                scriptNode = Dom.create('script').attr('src',src)
             processResult.dom.append(scriptNode)
 
             if( scriptObj.origin ){
@@ -47,7 +48,7 @@ function output( processResult ){
 
     if( scriptStr ){
         var scriptSrc = Config.target_folder + "/index.js"
-        processResult.dom.append( Dom.create('script').attr('src', scriptSrc ) )
+        processResult.dom.append( Dom.create('script').attr('src', 'index.js' ) )
         Util.save_file_from_string( scriptSrc, scriptStr);
     }
 
@@ -56,8 +57,9 @@ function output( processResult ){
     var styleStr = "", styles = Config.global_styles.concat( processResult.styles),stylesCache = {}
     Util.each( styles, function(styleObj){
         if( styleObj.href && !scriptsCache[styleObj.href] ){
-            processResult.dom.prepend(
-                Dom.create('link').attr('href',styleObj.href).attr('type','text/css').attr('rel','stylesheet'))
+            var href = styleObj.href.replace( Config.target_folder+'/',''),
+                linkDom = Dom.create('link').attr('href',href).attr('type','text/css').attr('rel','stylesheet')
+            processResult.dom.prepend(linkDom)
 
             if( styleObj.origin ){
                 Util.copy( styleObj.origin, styleObj.href )
@@ -70,7 +72,7 @@ function output( processResult ){
     if( styleStr ){
         var styleSrc = Config.target_folder + "/index.css"
         processResult.dom.append(
-            Dom.create('link').attr('href',styleSrc).attr('type','text/css').attr('rel','stylesheet'))
+            Dom.create('link').attr('href','index.css').attr('type','text/css').attr('rel','stylesheet'))
 
         Util.save_file_from_string( styleSrc, styleStr);
     }

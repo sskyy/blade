@@ -27,9 +27,11 @@ Binding.register_dom_generator('Text',{
         }else{
             var dom = Dom.create('img'),
                 filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
-                ext = Config.export_img_ext
+                ext = Config.export_img_ext,
+                src = filename.replace(Config.target_folder+"/",'') + ext
 
-            dom.attr('src', filename+ext)
+
+            dom.attr('src', src)
             outputRef.exportFiles.push( {layer : layer, target : filename+ext})
         }
 
@@ -103,9 +105,11 @@ Binding.register_dom_generator('Rect',{
         if( needExport ){
             dom = Dom.create('img')
             var  filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
-                ext = Config.export_img_ext
+                ext = Config.export_img_ext,
+                src = filename.replace(Config.target_folder+"/",'') + ext
 
-            dom.attr('src', filename+ext)
+
+            dom.attr('src', src)
             outputRef.exportFiles.push( {layer : layer, target : filename+ext})
         }else{
             dom = Dom.create('div')
@@ -164,11 +168,13 @@ Binding.register_dom_generator('Rect',{
 Binding.register_dom_generator('Bitmap1',function(layer,outputRef){
     var dom = Dom.create('img'),
         filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
-        ext = Config.export_img_ext
+        ext = Config.export_img_ext,
+        src = filename.replace(Config.target_folder+"/",'') + ext
 
 
 
-    dom.attr('src', filename+ext)
+
+    dom.attr('src', src)
     //export it
     outputRef.exportFiles.push( {layer : layer, target : filename+ext})
 
@@ -180,11 +186,12 @@ Binding.register_dom_generator('Bitmap1',function(layer,outputRef){
 Binding.register_dom_generator('default',function(layer,outputRef){
     var dom = Dom.create('img'),
         filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
-        ext = Config.export_img_ext
+        ext = Config.export_img_ext,
+        src = filename.replace(Config.target_folder+"/",'') + ext
 
 
 
-    dom.attr('src', filename+ext)
+    dom.attr('src', src)
     //export it
     outputRef.exportFiles.push( {layer : layer, target : filename+ext})
 
