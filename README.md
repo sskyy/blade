@@ -7,7 +7,7 @@ Blade is a Sketch 3 plugin for automatically HTML generating. It will generate t
 
  - This plugin now work for **latest Sketch beta or version above 3.0.3(7882)** !!!.
  - This version is more stable now, but may still have problem with mega size sketch file.
- - Please group all you layer in one group as the demo shows, for I have not test it with artboard.
+ - Please group all you layer in one group and place it at coordinate (0,0) as the demo shows, for I have not test it with artboard.
 
 
 ##Quick start##

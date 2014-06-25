@@ -2,6 +2,17 @@
  * Created by jiamiu on 14-5-21.
  */
 
+function handler_export( layer, outputRef){
+    var dom = Dom.create('img'),
+        filename = Config.images_folder + "/" + Util.uniq( Binding.sanitize_filename(layer.name()) ),
+        ext = Config.export_img_ext,
+        src = filename.replace(Config.target_folder+"/",'') + ext
+
+
+    dom.attr('src', src)
+    outputRef.exportFiles.push( {layer : layer, target : filename+ext})
+    return dom
+}
 
 Binding.register_dom_generator('LayerGroup',function(layer, outputRef){
     outputRef.dom =  Dom.create('div')
@@ -25,14 +36,7 @@ Binding.register_dom_generator('Text',{
             //TODO browsers has different strategy to calculate the width of space with Sketch.
             dom.innerHTML = layer.stringValue()
         }else{
-            var dom = Dom.create('img'),
-                filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
-                ext = Config.export_img_ext,
-                src = filename.replace(Config.target_folder+"/",'') + ext
-
-
-            dom.attr('src', src)
-            outputRef.exportFiles.push( {layer : layer, target : filename+ext})
+            var dom = handler_export(layer, outputRef)
         }
 
         Binding.setup_rect_for_dom( dom, layer )
@@ -66,6 +70,7 @@ Binding.register_dom_generator('Text',{
         dom.style['margin-top'] = (parseInt( dom.style['line-height'] ) - parseInt( layer.fontSize() ) ) + "px"
 
         dom.style['white-space'] = 'pre'
+        dom.style['word-break'] = 'break-word'
 
         //NOT SUPPORT font-style NOW
         var font = layer.font()
@@ -103,14 +108,8 @@ Binding.register_dom_generator('Rect',{
         }
 
         if( needExport ){
-            dom = Dom.create('img')
-            var  filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
-                ext = Config.export_img_ext,
-                src = filename.replace(Config.target_folder+"/",'') + ext
+            dom = handler_export(layer, outputRef)
 
-
-            dom.attr('src', src)
-            outputRef.exportFiles.push( {layer : layer, target : filename+ext})
         }else{
             dom = Dom.create('div')
         }
@@ -166,17 +165,8 @@ Binding.register_dom_generator('Rect',{
 })
 
 Binding.register_dom_generator('Bitmap1',function(layer,outputRef){
-    var dom = Dom.create('img'),
-        filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
-        ext = Config.export_img_ext,
-        src = filename.replace(Config.target_folder+"/",'') + ext
+    var dom = handler_export(layer, outputRef)
 
-
-
-
-    dom.attr('src', src)
-    //export it
-    outputRef.exportFiles.push( {layer : layer, target : filename+ext})
 
     Binding.setup_rect_for_dom( dom, layer )
     outputRef.dom = dom
@@ -184,16 +174,7 @@ Binding.register_dom_generator('Bitmap1',function(layer,outputRef){
 
 
 Binding.register_dom_generator('default',function(layer,outputRef){
-    var dom = Dom.create('img'),
-        filename = Util.uniq( Config.images_folder + "/" + Binding.sanitize_filename(layer.name()) ),
-        ext = Config.export_img_ext,
-        src = filename.replace(Config.target_folder+"/",'') + ext
-
-
-
-    dom.attr('src', src)
-    //export it
-    outputRef.exportFiles.push( {layer : layer, target : filename+ext})
+    var dom = handler_export(layer, outputRef)
 
     Binding.setup_rect_for_dom( dom, layer )
     outputRef.dom = dom
