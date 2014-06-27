@@ -10,6 +10,7 @@ function export_as_img( layer, filename ){
   slice = [[MSSliceMaker slicesFromExportableLayer:layer inRect:rect] firstObject]
   slice.page = [[doc currentPage] copyLightweight]
   slice.format = "png"
+  slice.scale = 2
 
 //  Util.log("— writing asset " + slice + " to disk: " + filename)
   var imageData = [MSSliceExporter dataForRequest:slice]

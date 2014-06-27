@@ -24,22 +24,7 @@ var Util = Util || (function() {
         }
     }
 
-    // export the first slice from a doc, as a given kind
-    my.export = function(document, kind){
-        var slices = [[document currentPage] allSlices];
-        if ([slices count] > 0) {
-            var slice = slices[0];
-            var file_url = [document fileURL];
-            var file_name = [[file_url URLByDeletingPathExtension] lastPathComponent];
-            var export_folder = [[[file_url URLByDeletingLastPathComponent] URLByDeletingLastPathComponent] URLByAppendingPathComponent:"Exported"]
-            var export_url = [[export_folder URLByAppendingPathComponent:file_name] URLByAppendingPathExtension:kind];
-            var export_path = [export_url path];
-            [document saveArtboardOrSlice:slice toFile:export_path];
-            my.log("Exported " + export_path);
-        } else {
-            my.log("No slices");
-        }
-    };
+
 
     // return the Sketch version number
     // (we fish this out of the main info dictionary for the application)
