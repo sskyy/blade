@@ -4,7 +4,7 @@
 function export_as_img( layer, filename ){
   // Actual writing of asset
   var slice,
-    rect = [layer rectByAccountingForStyleSize:[[layer absoluteRect] rect]]
+    rect = [layer absoluteDirtyRect]
 
 
   slice = [[MSSliceMaker slicesFromExportableLayer:layer inRect:rect] firstObject]
