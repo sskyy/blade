@@ -1,16 +1,18 @@
 Blade  V0.0.1
 ==============
 
+**Blade is not working with the latest Sketch, but I'm rewriting it.**
+
 Blade is a Sketch 3 plugin for automatically HTML generating. It will generate tag `<div>` for group, tag `<p>` for text , etc.
 
-##Notice##
+## Notice
 
  - This plugin works for **latest Sketch beta or version above 3.0.3(7882)** !!!.
  - This version is more stable now, but may still have problem with mega size sketch file.
  - Please group all you layer in one group and place it at coordinate (0,0) as the demo shows. - It does not work with artboard for now.
 
 
-##Quick start##
+## Quick start
 
 
  - Clone or download the repo.
@@ -20,24 +22,24 @@ Blade is a Sketch 3 plugin for automatically HTML generating. It will generate t
 
 
 
-##Amazing features##
+## Amazing features
 
 I uploaded a demo sketch file and the generated HTML files which shows some magic. Have a quick look here:
 
-###1. My sketch file:
+### 1. My sketch file:
 
 <img width= "100%" src = "https://raw.githubusercontent.com/sskyy/blade/master/demo/1.png"/>
 
 You may notice the special layer names such as `[btn]` or `input[text]`. `[***]` is what I called `directive`, similar to AngularJS's directive. The directive will tell blade what kind of dom element should be generate or this layer. And some powerful directives may generate scripts to make element interactive.
 
 
-###2. The Generated HTML:
+### 2. The Generated HTML:
 
 <img  width= "100%" src = "https://raw.githubusercontent.com/sskyy/blade/master/demo/2.png"/>
 
 As it shows, blade generate a input element for the layer which name is `input[text]` and a button for `[btn]`.
 
-###3. What does `[case]` do?:
+### 3. What does `[case]` do?:
 
 <img  width= "100%" src = "https://raw.githubusercontent.com/sskyy/blade/master/demo/3.png"/>
 
@@ -45,7 +47,7 @@ Press `shift` key down on the web page, then you will see the green border and t
 
 <img  width= "100%" src = "https://raw.githubusercontent.com/sskyy/blade/master/demo/4.png"/>
 
-##What's next?##
+## What's next?
 
 build-in directives:
 
@@ -66,7 +68,7 @@ build-in directives:
 
 I will continue write magic tags for blade, and trying to integrate AngularJS to help build better prototype。
 
-##How to contribute?##
+## How to contribute?
 
 - Install nodejs and [gulp](http://gulpjs.com/).
 - Enter into the repo folder and run `gulp`, then gulp will watch all the files in `src` and automatically build it into `dist` folder.
