@@ -1,8 +1,14 @@
 import * as WebViewUtils from 'utils/webview';
 
-export function findComponentName(name) {
-  const match = name.match(/^\[(\w+)\]/)
-  return match == null ? null : match[1]
+export function getComponentName(name) {
+  if (name.slice(0, 1) !== '[') return null
+  let match = ''
+  for( let i = 1; i < name.length(); i++) {
+    const c = name.slice(i, i+1)
+    if (c === ']') break
+    match = match + c
+  }
+  return match
 }
 
 export function sendCommandToPanel(command, argv) {

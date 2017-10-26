@@ -1,12 +1,13 @@
 import { initWithContext, document } from 'utils/core'
 import * as WebViewUtils from 'utils/webview'
 import {
-  findComponentName,
+  getComponentName,
   sendCommandToWindow,
   sendCommandToPanel,
   showPanel,
   hidePanel,
   showWindow,
+
 } from './common'
 
 export function openWindow (context) {
@@ -35,7 +36,7 @@ export function onSelectionChanged (context) {
 
 
   const selectedLayer = selectedLayers.firstLayer()
-  const directiveName = findComponentName(selectedLayer.name())
+  const directiveName = getComponentName(selectedLayer.name())
 
   if (directiveName == null) {
     return hidePanel()
@@ -47,4 +48,14 @@ export function onSelectionChanged (context) {
 
   showPanel()
   sendCommandToPanel('showProps', finalProps)
+}
+
+export function exportLayer(context) {
+  initWithContext(context)
+  var sketch = context.api()
+  var options = { "scales" : "3", "formats" : "png" }
+        sketch.selectedDocument.selectedLayers.iterate(function(layer) {
+        layer.export(options)
+    })
+  document.showMessage("done!")
 }

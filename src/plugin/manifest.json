@@ -4,7 +4,7 @@
   "description": "Blade 1.0!",
   "authorEmail": "skyking_H@hotmail.com",
   "author": "sskyy",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "disableCocoaScriptPreprocessor": false,
   "commands": [
     {
@@ -18,6 +18,12 @@
       "handler": "onSelectionChanged",
       "name": "Selection Changed",
       "identifier": "onSelectionChanged"
+    },
+    {
+      "script": "plugin.js",
+      "handler": "exportLayer",
+      "name": "exportLayer",
+      "identifier": "exportLayer"
     },
     {
       "script": "plugin.js",
@@ -48,7 +54,8 @@
         "items": [
           "openWindow",
           "refreshHTML",
-          "testSendAction"
+          "testSendAction",
+          "exportLayer"
         ]
       }
     ]
