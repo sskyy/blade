@@ -1,0 +1,34 @@
+@import 'fonts';
+@import 'colors';
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.app {
+  padding: 30px;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  font-family: $fonts-default;
+
+  .logo {
+    width: 100px;
+  }
+
+  .app-content {
+    text-align: left;
+  }
+
+  code, pre {
+    font-size: 90%;
+    font-family: $fonts-mono;
+    background: none $colors-background;
+  }
+
+  pre {
+    padding: 7px;
+    overflow: auto;
+  }
+}

@@ -1,3 +1,13 @@
-.DS_Store
-.idea/
+# Node modules
 node_modules/
+
+# Build folder
+Contents/
+
+# Ignore knowledge base for now until cleaned up :D
+knowledge/
+
+# Docs files
+docs/.sass-cache
+docs/_site
+.idea
