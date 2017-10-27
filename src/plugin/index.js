@@ -1,14 +1,14 @@
 import { initWithContext, document } from 'utils/core'
 import * as WebViewUtils from 'utils/webview'
 import {
-  getComponentName,
+  parseNameAndQuery,
   sendCommandToWindow,
   sendCommandToPanel,
   showPanel,
   hidePanel,
   showWindow,
-
 } from './common'
+import parsers from './parser'
 
 export function openWindow (context) {
   initWithContext(context)
@@ -36,7 +36,7 @@ export function onSelectionChanged (context) {
 
 
   const selectedLayer = selectedLayers.firstLayer()
-  const directiveName = getComponentName(selectedLayer.name())
+  const directiveName = parseNameAndQuery(selectedLayer.name()).name
 
   if (directiveName == null) {
     return hidePanel()
@@ -52,10 +52,22 @@ export function onSelectionChanged (context) {
 
 export function exportLayer(context) {
   initWithContext(context)
-  var sketch = context.api()
-  var options = { "scales" : "3", "formats" : "png" }
+  let sketch = context.api()
+  let options = { "scales" : "3", "formats" : "png" }
         sketch.selectedDocument.selectedLayers.iterate(function(layer) {
         layer.export(options)
     })
+  document.showMessage("done!")
+}
+
+export function parseLayer(context) {
+  initWithContext(context)
+  let first
+  context.api().selectedDocument.selectedLayers.iterate(function (layer) {
+    if (!first) first = layer
+  })
+  const result = NSString.stringWithFormat("%@", JSON.stringify(parsers.Group(first)))
+
+  result.writeToFile_atomically(context.document.fileURL().path().replace(/\.sketch$/, '.json'), true)
   document.showMessage("done!")
 }

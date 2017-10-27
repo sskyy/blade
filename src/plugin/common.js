@@ -1,14 +1,44 @@
 import * as WebViewUtils from 'utils/webview';
 
-export function getComponentName(name) {
-  if (name.slice(0, 1) !== '[') return null
-  let match = ''
-  for( let i = 1; i < name.length(); i++) {
-    const c = name.slice(i, i+1)
-    if (c === ']') break
-    match = match + c
+// TODO
+export function parseNameAndQuery(inputName, getDefaultValues = () => {}) {
+  const defaultValues = getDefaultValues()
+  const result = { name: null, query: defaultValues }
+  const name = String(inputName)
+  if (name[0] !== '[') return result
+
+  let state = 'none'
+  let stack = ''
+
+  for( let i = 0; i < name.length; i++) {
+    const c = name[i]
+    if (c === '[') {
+      state = 'start'
+    } else if (c === '?' || (state === 'start' && c === ']')) {
+      result.name = stack
+      stack = ''
+      state = c === ']' ? 'end' : 'query'
+    } else if (c === '&' || c === ']') {
+      if (stack.length !== 0) {
+        const arr = stack.split('=')
+        const queryName = arr[0]
+        const queryValue = arr[1]
+
+        const defaultValue = defaultValues[queryName]
+        result.query[queryName] = typeof defaultValue === 'boolean' ?
+          Boolean(queryValue) :
+          typeof defaultValue === 'number' ?
+            Number(queryValue) :
+            queryValue
+        stack = ''
+      }
+      state = c === '&' ? 'queryItem' : 'end'
+    } else {
+      stack = stack + c
+    }
   }
-  return match
+  if (state !== 'end') throw new Error(`state not end ${state}`)
+  return result
 }
 
 export function sendCommandToPanel(command, argv) {

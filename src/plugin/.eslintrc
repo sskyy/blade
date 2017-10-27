@@ -50,7 +50,7 @@
   },
   "parser:": "babel-eslint",
   "plugins:": [
-    "no-unused-vars-rest"
+    "transform-object-rest-spread"
   ],
   "rules:": {
     "eqeqeq:": [

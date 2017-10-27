@@ -1,3 +1,3 @@
-/**
- * Created by jiamiu on 2017/10/26.
- */
+export default {
+
+}

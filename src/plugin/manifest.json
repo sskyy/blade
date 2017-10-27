@@ -4,7 +4,7 @@
   "description": "Blade 1.0!",
   "authorEmail": "skyking_H@hotmail.com",
   "author": "sskyy",
-  "version": "1.0.11",
+  "version": "1.0.14",
   "disableCocoaScriptPreprocessor": false,
   "commands": [
     {
@@ -24,6 +24,12 @@
       "handler": "exportLayer",
       "name": "exportLayer",
       "identifier": "exportLayer"
+    },
+    {
+      "script": "plugin.js",
+      "handler": "parseLayer",
+      "name": "parseLayer",
+      "identifier": "parseLayer"
     },
     {
       "script": "plugin.js",
@@ -55,7 +61,8 @@
           "openWindow",
           "refreshHTML",
           "testSendAction",
-          "exportLayer"
+          "exportLayer",
+          "parseLayer"
         ]
       }
     ]

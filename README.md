@@ -1,3 +1,12 @@
 # Blade 0.0.2
 
-Coming soon.
+## Components
+
+ - [ ] Group( as default)
+ - [ ] A
+ - [ ] Button
+ - [ ] Ignore
+ - [ ] Img
+ - [ ] Input
+ - [ ] Text
+ - [ ] Textarea
