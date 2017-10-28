@@ -9,9 +9,9 @@
   "commands": [
     {
       "script": "plugin.js",
-      "handler": "openWindow",
+      "handler": "openRunner",
       "name": "Open Window",
-      "identifier": "openWindow"
+      "identifier": "openRunner"
     },
     {
       "script": "plugin.js",
@@ -58,7 +58,7 @@
       {
         "title": "Blade",
         "items": [
-          "openWindow",
+          "openRunner",
           "refreshHTML",
           "testSendAction",
           "exportLayer",

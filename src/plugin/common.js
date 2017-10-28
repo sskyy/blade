@@ -49,8 +49,8 @@ export function sendCommandToWindow(command, argv) {
   WebViewUtils.sendWindowAction(WebViewUtils.windowIdentifier, command, argv);
 }
 
-export function showWindow() {
-  WebViewUtils.openWindow(WebViewUtils.windowIdentifier);
+export function showWindow(file) {
+  WebViewUtils.openWindow(WebViewUtils.windowIdentifier, file);
 }
 
 export function showPanel() {

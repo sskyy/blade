@@ -10,9 +10,9 @@ import {
 } from './common'
 import parsers from './parser'
 
-export function openWindow (context) {
+export function openRunner (context) {
   initWithContext(context)
-  showWindow()
+  showWindow('runner.html')
 }
 
 export function refreshHTML (context) {
@@ -66,6 +66,7 @@ export function parseLayer(context) {
   context.api().selectedDocument.selectedLayers.iterate(function (layer) {
     if (!first) first = layer
   })
+  // TODO recursive parse layer
   const result = NSString.stringWithFormat("%@", JSON.stringify(parsers.Group(first)))
 
   result.writeToFile_atomically(context.document.fileURL().path().replace(/\.sketch$/, '.json'), true)

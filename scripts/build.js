@@ -16,15 +16,15 @@ buildPlugin(error => {
     return;
   }
 
-  buildWebView(error => {
-    if (error) {
-      logError(error);
-      return;
-    }
-
-    console.log(chalk.green.bold('✓ FINISHED BUILD '));
-    console.log(chalk.grey.italic('Run `yarn bundle` to create the final plugin bundle to be published.'))
-  });
+  // buildWebView(error => {
+  //   if (error) {
+  //     logError(error);
+  //     return;
+  //   }
+  //
+  //   console.log(chalk.green.bold('✓ FINISHED BUILD '));
+  //   console.log(chalk.grey.italic('Run `yarn bundle` to create the final plugin bundle to be published.'))
+  // });
 });
 
 
