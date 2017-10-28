@@ -15,6 +15,12 @@
     },
     {
       "script": "plugin.js",
+      "handler": "openExternal",
+      "name": "Open External",
+      "identifier": "openExternal"
+    },
+    {
+      "script": "plugin.js",
       "handler": "onSelectionChanged",
       "name": "Selection Changed",
       "identifier": "onSelectionChanged"
@@ -33,9 +39,9 @@
     },
     {
       "script": "plugin.js",
-      "handler": "refreshHTML",
-      "name": "refresh HTML",
-      "identifier": "refreshHTML"
+      "handler": "sendDataToRunner",
+      "name": "sendDataToRunner",
+      "identifier": "sendDataToRunner"
     },
     {
       "script": "plugin.js",
@@ -59,7 +65,8 @@
         "title": "Blade",
         "items": [
           "openRunner",
-          "refreshHTML",
+          "openExternal",
+          "sendDataToRunner",
           "testSendAction",
           "exportLayer",
           "parseLayer"

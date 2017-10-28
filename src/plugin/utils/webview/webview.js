@@ -41,7 +41,7 @@ export function getFilePath (file) {
 
 export function createWebView (path, frame) {
   const webView = initBridgedWebView(frame, 'Sketch');
-  const url = NSURL.fileURLWithPath(getFilePath(path));
+  const url = path.slice(0, 4) === 'http' ? NSURL.URLWithString(path) : NSURL.fileURLWithPath(getFilePath(path));
   log('File URL');
   log(url);
 

@@ -12,12 +12,19 @@ import parsers from './parser'
 
 export function openRunner (context) {
   initWithContext(context)
-  showWindow('runner.html')
+  // showWindow('runner.html')
+  showWindow('http://127.0.0.1:8080/runner.html')
 }
 
-export function refreshHTML (context) {
+export function openExternal(context) {
   initWithContext(context)
-  sendCommandToWindow('refresh', {})
+  showWindow('http://baidu.com')
+}
+
+export function sendDataToRunner (context) {
+  initWithContext(context)
+  sendCommandToWindow('data', {a: 1, b:2})
+  // document.showMessage("done!")
 }
 
 export function testSendAction(context) {
