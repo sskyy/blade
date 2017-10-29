@@ -21,7 +21,7 @@ export default function Group(group) {
   const { query } = parseNameAndQuery(group.name, getDefaultState)
   const node = {
     type: "Group",
-    props: Object.assign(query, extractBoxRelatedStyle(group)),
+    props: Object.assign(query, { style: extractBoxRelatedStyle(group) }),
   }
 
   if (bgLayer) {

@@ -60,3 +60,29 @@ export function showPanel() {
 export function hidePanel() {
   WebViewUtils.hidePanel(WebViewUtils.panelIdentifier);
 }
+
+export function recursiveParse(entry, parsers) {
+  const { name, query = {} } = parseNameAndQuery(entry.name)
+  let resolvedName = name
+  if (resolvedName === null) {
+    if (entry.isArtboard) {
+      resolvedName = 'App'
+    } else  if (entry.isGroup) {
+      resolvedName = 'Group'
+    } else {
+      resolvedName = 'Unknown'
+    }
+  }
+
+  if (parsers[resolvedName] === undefined) {
+    log(`unknown parser ${resolvedName}, entry: ${entry.name}, parsers: ${Object.keys(parsers).join(',')}`)
+    throw new Error(`unknown parser ${resolvedName}`)
+   }
+
+  const [result, next] = parsers[resolvedName](entry)
+  if (next && next.length !==0) {
+    result.children = next.map(child => recursiveParse(child, parsers))
+  }
+  return Object.assign(result, {props: Object.assign(result.props, query)})
+}
+

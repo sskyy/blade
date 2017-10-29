@@ -32,6 +32,7 @@ export function initBridgedWebView (frame, bridgeName = 'SketchBridge') {
   const config = WKWebViewConfiguration.alloc().init();
   const messageHandler = BridgeMessageHandler.alloc().init();
   config.userContentController().addScriptMessageHandler_name(messageHandler, bridgeName);
+  config.preferences().setValue_forKey(true, 'developerExtrasEnabled')
   return WKWebView.alloc().initWithFrame_configuration(frame, config);
 }
 

@@ -7,6 +7,7 @@ import {
   showPanel,
   hidePanel,
   showWindow,
+  recursiveParse,
 } from './common'
 import parsers from './parser'
 
@@ -23,8 +24,20 @@ export function openExternal(context) {
 
 export function sendDataToRunner (context) {
   initWithContext(context)
-  sendCommandToWindow('data', {a: 1, b:2})
-  // document.showMessage("done!")
+  if (!context.api) return document.showMessage("error context.api!")
+
+  let firstArtboard
+  context.api().selectedDocument.selectedPage.iterate(function (page) {
+    if (!firstArtboard) firstArtboard = page
+  })
+
+  if (!firstArtboard || !firstArtboard.isArtboard) return document.showMEssage('please select an artboard')
+  // TODO recursive parse layer
+  // const resultStr = NSString.stringWithFormat("%@", JSON.stringify(recursiveParse(firstArtboard, parsers)))
+  // resultStr.writeToFile_atomically(context.document.fileURL().path().replace(/\.sketch$/, '.json'), true)
+  const result = recursiveParse(firstArtboard, parsers)
+  sendCommandToWindow('config', result)
+  document.showMessage("done!")
 }
 
 export function testSendAction(context) {
