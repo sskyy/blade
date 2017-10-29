@@ -35,7 +35,7 @@ export function open (identifier, path = 'index.html', options = {}) {
 export function findWebView (identifier) {
   let threadDictionary = NSThread.mainThread().threadDictionary();
   const window = threadDictionary[identifier];
-  return window.contentView().subviews()[0];
+  return window && window.contentView().subviews()[0];
 }
 
 export function sendAction (identifier, name, payload = {}) {

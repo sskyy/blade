@@ -17,7 +17,7 @@ export function extractBoxRelatedStyle(layer) {
   return Object.assign(extractBoxStyle(layer), extractPositionStyle(layer))
 }
 
-function toCSSRGBA(RGBAStr) {
+export function toCSSRGBA(RGBAStr) {
   return 'rgba(' + String( RGBAStr ).replace(/[\(\)]/g,'').split(' ').map(function(v) {
       const [type, value] = v.split(":")
       if (type !== 'a') {
@@ -73,7 +73,7 @@ export function extractBoxStyle(layer) {
 export function extractPositionStyle(layer) {
   return {
     position: 'absolute',
-    left : layer.container.sketchObject.absoluteRect().rulerX() - layer.sketchObject.absoluteRect().rulerX(),
-    top: layer.container.sketchObject.absoluteRect().rulerY() - layer.sketchObject.absoluteRect().rulerX(),
+    left : layer.container.sketchObject.absoluteRect().rulerX() + layer.sketchObject.absoluteRect().rulerX(),
+    top: layer.container.sketchObject.absoluteRect().rulerY() + layer.sketchObject.absoluteRect().rulerY(),
   }
 }

@@ -8,23 +8,24 @@ import {
   hidePanel,
   showWindow,
   recursiveParse,
+  isWindowOpened
 } from './common'
 import parsers from './parser'
+
+const RUNNER_URL = 'http://127.0.0.1:8080/runner.html'
 
 export function openRunner (context) {
   initWithContext(context)
   // showWindow('runner.html')
-  showWindow('http://127.0.0.1:8080/runner.html')
-}
-
-export function openExternal(context) {
-  initWithContext(context)
-  showWindow('http://baidu.com')
+  showWindow(RUNNER_URL)
 }
 
 export function sendDataToRunner (context) {
   initWithContext(context)
   if (!context.api) return document.showMessage("error context.api!")
+  if (!isWindowOpened(RUNNER_URL)) {
+    showWindow(RUNNER_URL)
+  }
 
   let firstArtboard
   context.api().selectedDocument.selectedPage.iterate(function (page) {
@@ -32,11 +33,10 @@ export function sendDataToRunner (context) {
   })
 
   if (!firstArtboard || !firstArtboard.isArtboard) return document.showMEssage('please select an artboard')
-  // TODO recursive parse layer
   // const resultStr = NSString.stringWithFormat("%@", JSON.stringify(recursiveParse(firstArtboard, parsers)))
   // resultStr.writeToFile_atomically(context.document.fileURL().path().replace(/\.sketch$/, '.json'), true)
   const result = recursiveParse(firstArtboard, parsers)
-  sendCommandToWindow('config', result)
+  sendCommandToWindow(RUNNER_URL, 'config', result)
   document.showMessage("done!")
 }
 

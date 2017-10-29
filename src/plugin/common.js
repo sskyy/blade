@@ -41,24 +41,25 @@ export function parseNameAndQuery(inputName, getDefaultValues = () => {}) {
   return result
 }
 
-export function sendCommandToPanel(command, argv) {
-  WebViewUtils.sendPanelAction(WebViewUtils.panelIdentifier, command, argv);
+export function sendCommandToPanel(path, command, argv) {
+  WebViewUtils.sendPanelAction(path, command, argv);
 }
 
-export function sendCommandToWindow(command, argv) {
-  WebViewUtils.sendWindowAction(WebViewUtils.windowIdentifier, command, argv);
+export function sendCommandToWindow(path, command, argv) {
+  WebViewUtils.sendWindowAction(path, command, argv);
 }
 
-export function showWindow(file) {
-  WebViewUtils.openWindow(WebViewUtils.windowIdentifier, file);
+export function showWindow(path) {
+  // CAUTION use path as identifier
+  WebViewUtils.openWindow(path, path);
 }
 
-export function showPanel() {
-  WebViewUtils.showPanel(WebViewUtils.panelIdentifier);
+export function showPanel(path) {
+  WebViewUtils.showPanel(path, path);
 }
 
-export function hidePanel() {
-  WebViewUtils.hidePanel(WebViewUtils.panelIdentifier);
+export function hidePanel(path) {
+  WebViewUtils.hidePanel(path, path);
 }
 
 export function recursiveParse(entry, parsers) {
@@ -69,6 +70,8 @@ export function recursiveParse(entry, parsers) {
       resolvedName = 'App'
     } else  if (entry.isGroup) {
       resolvedName = 'Group'
+    } else  if (entry.isText) {
+      resolvedName = 'Text'
     } else {
       resolvedName = 'Unknown'
     }
@@ -86,3 +89,6 @@ export function recursiveParse(entry, parsers) {
   return Object.assign(result, {props: Object.assign(result.props, query)})
 }
 
+export function isWindowOpened(path) {
+  return Boolean(WebViewUtils.findWebView(path))
+}

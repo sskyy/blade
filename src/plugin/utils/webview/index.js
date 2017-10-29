@@ -9,7 +9,8 @@ import {
 
 import {
   open as openWindow,
-  sendAction as sendWindowAction
+  sendAction as sendWindowAction,
+  findWebView
 } from './window';
 
 import {
@@ -32,6 +33,7 @@ export {
 
   openWindow,
   sendWindowAction,
+  findWebView,
 
   togglePanel,
   openPanel,

@@ -6,7 +6,7 @@ import Unknown from './Unknown'
 // import Ignore from './Ignore'
 // import Img from './Img'
 // import Input from './Input'
-// import Text from './Text'
+import Text from './Text'
 // import Textarea from './Textarea'
 
 export default {
@@ -18,6 +18,6 @@ export default {
   // Ignore,
   // Img,
   // Input,
-  // Text,
+  Text,
   // Textarea
 }

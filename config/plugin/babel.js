@@ -5,10 +5,7 @@ module.exports = {
     }]
   ],
   'plugins': [
-    // 'transform-object-rest-spread',
-    // ["transform-react-jsx", {
-    //   "pragma": "createElement"
-    // }],
+    'transform-object-rest-spread',
     ['module-resolver', {
       alias: {
         utils: './src/plugin/utils'
