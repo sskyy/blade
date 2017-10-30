@@ -73,7 +73,7 @@ export function extractBoxStyle(layer) {
 export function extractPositionStyle(layer) {
   return {
     position: 'absolute',
-    left : layer.container.sketchObject.absoluteRect().rulerX() + layer.sketchObject.absoluteRect().rulerX(),
-    top: layer.container.sketchObject.absoluteRect().rulerY() + layer.sketchObject.absoluteRect().rulerY(),
+    left : layer.sketchObject.absoluteRect().rulerX() - layer.container.sketchObject.absoluteRect().rulerX(),
+    top: layer.sketchObject.absoluteRect().rulerY() - layer.container.sketchObject.absoluteRect().rulerY(),
   }
 }

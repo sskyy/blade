@@ -15,7 +15,7 @@ import parsers from './parser'
 const RUNNER_URL = 'http://127.0.0.1:8080/runner.html'
 
 export function openRunner (context) {
-  initWithContext(context)
+  // initWithContext(context)
   // showWindow('runner.html')
   showWindow(RUNNER_URL)
 }
@@ -38,11 +38,6 @@ export function sendDataToRunner (context) {
   const result = recursiveParse(firstArtboard, parsers)
   sendCommandToWindow(RUNNER_URL, 'config', result)
   document.showMessage("done!")
-}
-
-export function testSendAction(context) {
-  initWithContext(context)
-  WebViewUtils.sendAction("aaa", {value: true})
 }
 
 export function onSelectionChanged (context) {
@@ -68,6 +63,12 @@ export function onSelectionChanged (context) {
 
   showPanel()
   sendCommandToPanel('showProps', finalProps)
+}
+
+// for debug
+export function testSendAction(context) {
+  initWithContext(context)
+  WebViewUtils.sendAction("aaa", {value: true})
 }
 
 export function exportLayer(context) {

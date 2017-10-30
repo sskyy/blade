@@ -2,11 +2,12 @@
 
 ## Components
 
- - [ ] Group( as default)
- - [ ] A
- - [ ] Button
- - [ ] Ignore
- - [ ] Img
- - [ ] Input
- - [ ] Text
- - [ ] Textarea
+ - [x] Group( as default)
+ - [  ] A
+ - [  ] Button
+ - [  ] Case
+ - [  ] Ignore
+ - [  ] Img
+ - [  ] Input
+ - [x] Text
+ - [  ] Textarea

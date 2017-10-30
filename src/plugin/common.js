@@ -73,7 +73,7 @@ export function recursiveParse(entry, parsers) {
     } else  if (entry.isText) {
       resolvedName = 'Text'
     } else {
-      resolvedName = 'Unknown'
+      resolvedName = 'Img'
     }
   }
 
