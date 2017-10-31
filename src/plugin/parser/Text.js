@@ -13,9 +13,9 @@ export default function TextGroup(layer) {
         // TODO align 翻译
         align: layer.sketchObject.textAlignment(),
         // TODO line spacing 翻译成 line height
-        lineHeight: layer.sketchObject.lineSpacing(),
+        // lineHeight: layer.sketchObject.lineSpacing(),
         letterSpacing: layer.sketchObject.characterSpacing() || 'inherit',
-        fontFamily: String(layer.fontPostscriptName()),
+        fontFamily: String(layer.sketchObject.fontPostscriptName()),
       }
     }
   }

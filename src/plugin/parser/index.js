@@ -4,7 +4,7 @@ import App from './App'
 import Group from './Group'
 import Unknown from './Unknown'
 // import Ignore from './Ignore'
-// import Img from './Img'
+import Img from './Img'
 // import Input from './Input'
 import Text from './Text'
 // import Textarea from './Textarea'
@@ -16,7 +16,7 @@ export default {
   App,
   Unknown,
   // Ignore,
-  // Img,
+  Img,
   // Input,
   Text,
   // Textarea

@@ -1,11 +1,10 @@
 import { parseNameAndQuery } from '../common'
-import { BgImg } from './reference'
 import { extractBoxRelatedStyle, extractEffectStyle } from './common'
 import { getDefaultState } from '../components/Group'
 
 const BG_NAME = 'Bg'
 
-export default function Group(group) {
+export default function Group(group, { createImgRef }) {
   const next = []
   let bgLayer = null
   group.iterate((layer) => {
@@ -20,13 +19,13 @@ export default function Group(group) {
 
   const { query } = parseNameAndQuery(group.name, getDefaultState)
   const node = {
-    type: "Group",
+    type: 'Group',
     props: Object.assign(query, { style: extractBoxRelatedStyle(group) }),
   }
 
   if (bgLayer) {
     if (bgLayer.isImage || bgLayer.isGroup) {
-      node.props.style.background = new BgImg(bgLayer.id)
+      node.props.style.background = createImgRef(bgLayer)
     } else {
       // TODO 配置 style 上去
       Object.assign(node.props.style, extractEffectStyle(bgLayer))

@@ -8,16 +8,16 @@ export function  getDefaultState() {
   }
 
 export function render({state, children}) {
-    // const style = {
-    //   ...state.style
-    // }
-    //
-    // if (state.center) {
-    //   Object.assign(style, {
-    //     position: 'relative',
-    //     marginLeft: 'auto',
-    //     marginRight: 'auto'
-    //   })
-    // }
-    // return <div style={style}>{children}</div>
-  }
+  // const style = {
+  //   ...state.style
+  // }
+  //
+  // if (state.center) {
+  //   Object.assign(style, {
+  //     position: 'relative',
+  //     marginLeft: 'auto',
+  //     marginRight: 'auto'
+  //   })
+  // }
+  // return <div style={style}>{children}</div>
+}

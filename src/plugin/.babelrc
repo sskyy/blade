@@ -1,0 +1,14 @@
+{
+  "presets": [
+    ["es2015", {"modules": false}]
+  ],
+  "plugins": [
+    "transform-object-rest-spread",
+    ["transform-react-jsx", {
+      "pragma": "createElement"
+    }],
+    ["module-alias", [
+      { "src": "./utils", "expose": "utils" }
+    ]]
+  ]
+}

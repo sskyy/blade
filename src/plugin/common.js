@@ -1,7 +1,8 @@
-import * as WebViewUtils from 'utils/webview';
+import * as WebViewUtils from 'utils/webview'
 
 // TODO
-export function parseNameAndQuery(inputName, getDefaultValues = () => {}) {
+export function parseNameAndQuery(inputName, getDefaultValues = () => {
+}) {
   const defaultValues = getDefaultValues()
   const result = { name: null, query: defaultValues }
   const name = String(inputName)
@@ -10,7 +11,7 @@ export function parseNameAndQuery(inputName, getDefaultValues = () => {}) {
   let state = 'none'
   let stack = ''
 
-  for( let i = 0; i < name.length; i++) {
+  for (let i = 0; i < name.length; i++) {
     const c = name[i]
     if (c === '[') {
       state = 'start'
@@ -34,7 +35,9 @@ export function parseNameAndQuery(inputName, getDefaultValues = () => {}) {
       }
       state = c === '&' ? 'queryItem' : 'end'
     } else {
+      /* eslint-disable operator-assignment */
       stack = stack + c
+      /* eslint-enable operator-assignment */
     }
   }
   if (state !== 'end') throw new Error(`state not end ${state}`)
@@ -42,37 +45,38 @@ export function parseNameAndQuery(inputName, getDefaultValues = () => {}) {
 }
 
 export function sendCommandToPanel(path, command, argv) {
-  WebViewUtils.sendPanelAction(path, command, argv);
+  WebViewUtils.sendPanelAction(path, command, argv)
 }
 
 export function sendCommandToWindow(path, command, argv) {
-  WebViewUtils.sendWindowAction(path, command, argv);
+  WebViewUtils.sendWindowAction(path, command, argv)
 }
 
 export function showWindow(path) {
   // CAUTION use path as identifier
-  WebViewUtils.openWindow(path, path);
+  WebViewUtils.openWindow(path, path)
 }
 
 export function showPanel(path) {
-  WebViewUtils.showPanel(path, path);
+  WebViewUtils.showPanel(path, path)
 }
 
 export function hidePanel(path) {
-  WebViewUtils.hidePanel(path, path);
+  WebViewUtils.hidePanel(path, path)
 }
 
-export function recursiveParse(entry, parsers) {
+export function recursiveParse(entry, parsers, context = {}) {
   const { name, query = {} } = parseNameAndQuery(entry.name)
   let resolvedName = name
   if (resolvedName === null) {
     if (entry.isArtboard) {
       resolvedName = 'App'
-    } else  if (entry.isGroup) {
+    } else if (entry.isGroup) {
       resolvedName = 'Group'
-    } else  if (entry.isText) {
+    } else if (entry.isText) {
       resolvedName = 'Text'
     } else {
+      // resolvedName = 'Unknown'
       resolvedName = 'Img'
     }
   }
@@ -80,13 +84,13 @@ export function recursiveParse(entry, parsers) {
   if (parsers[resolvedName] === undefined) {
     log(`unknown parser ${resolvedName}, entry: ${entry.name}, parsers: ${Object.keys(parsers).join(',')}`)
     throw new Error(`unknown parser ${resolvedName}`)
-   }
-
-  const [result, next] = parsers[resolvedName](entry)
-  if (next && next.length !==0) {
-    result.children = next.map(child => recursiveParse(child, parsers))
   }
-  return Object.assign(result, {props: Object.assign(result.props, query)})
+
+  const [result, next] = parsers[resolvedName](entry, context)
+  if (next && next.length !== 0) {
+    result.children = next.map(child => recursiveParse(child, parsers, context))
+  }
+  return Object.assign(result, { props: Object.assign(result.props, query) })
 }
 
 export function isWindowOpened(path) {
