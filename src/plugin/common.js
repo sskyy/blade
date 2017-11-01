@@ -96,3 +96,25 @@ export function recursiveParse(entry, parsers, context = {}) {
 export function isWindowOpened(path) {
   return Boolean(WebViewUtils.findWebView(path))
 }
+
+export function exportLayer(layer, options = {}) {
+  const fileFolder = NSTemporaryDirectory()
+
+  const finalOptions = {
+    ...options,
+    'use-id-for-name': true,
+    scales: '3',
+    formats: 'png',
+    output: fileFolder,
+  }
+
+  const fullPath = `${fileFolder}/${layer.id}@${finalOptions.scales}x.png`
+
+  layer.export(finalOptions)
+// TODO renameFile
+//   const url = NSURL.fileURLWithPath(fullPath)
+//   const data = NSData.alloc().initWithContentsOfURL(url)
+//   const base64 = data.base64EncodedStringWithOptions(0)
+//   NSFileManager.defaultManager().removeItemAtURL_error(url, null)
+//   return `data:image/png;base64,${base64}`
+}
