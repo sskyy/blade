@@ -1,14 +1,13 @@
-import { toCSSRGBA, extractPositionStyle, extractEffectStyle } from './common'
+import { toCSSRGBA, extractPositionStyle } from './common'
 
 export default function TextGroup(layer) {
-
   const node = {
-    type: "Text",
-    props: {
+    type: 'Text',
+    state: {
       text: String(layer.sketchObject.stringValue()),
       style: {
         fontSize: layer.sketchObject.fontSize(),
-        color : toCSSRGBA(layer.sketchObject.textColor()),
+        color: toCSSRGBA(layer.sketchObject.textColor()),
         ...extractPositionStyle(layer),
         // TODO align 翻译
         align: layer.sketchObject.textAlignment(),
@@ -16,8 +15,8 @@ export default function TextGroup(layer) {
         // lineHeight: layer.sketchObject.lineSpacing(),
         letterSpacing: layer.sketchObject.characterSpacing() || 'inherit',
         fontFamily: String(layer.sketchObject.fontPostscriptName()),
-      }
-    }
+      },
+    },
   }
 
   return [node, []]

@@ -1,29 +1,22 @@
 import * as WebViewUtils from 'utils/webview'
 
-// TODO
-export function parseNameAndQuery(inputName, getDefaultValues = () => {
-}) {
+export function parseNameAndQuery(inputName, getDefaultValues = () => ({
+})) {
   const defaultValues = getDefaultValues()
-  const result = { name: null, query: defaultValues }
+  const result = { name: '', query: defaultValues, hash: {} }
   const name = String(inputName)
   if (name[0] !== '[') return result
 
+  // name/query/hash
   let state = 'none'
   let stack = ''
 
-  for (let i = 0; i < name.length; i++) {
-    const c = name[i]
-    if (c === '[') {
-      state = 'start'
-    } else if (c === '?' || (state === 'start' && c === ']')) {
+  function clearLastStack() {
+    if (state === 'name') {
       result.name = stack
-      stack = ''
-      state = c === ']' ? 'end' : 'query'
-    } else if (c === '&' || c === ']') {
-      if (stack.length !== 0) {
-        const arr = stack.split('=')
-        const queryName = arr[0]
-        const queryValue = arr[1]
+    } else if (state === 'query') {
+      stack.split('&').forEach((subStack) => {
+        const [queryName, queryValue] = subStack.split('=')
 
         const defaultValue = defaultValues[queryName]
         result.query[queryName] = typeof defaultValue === 'boolean' ?
@@ -31,17 +24,42 @@ export function parseNameAndQuery(inputName, getDefaultValues = () => {
           typeof defaultValue === 'number' ?
             Number(queryValue) :
             queryValue
-        stack = ''
-      }
-      state = c === '&' ? 'queryItem' : 'end'
+      })
     } else {
-      /* eslint-disable operator-assignment */
-      stack = stack + c
-      /* eslint-enable operator-assignment */
+      // hash
+      stack.split('&').forEach((subStack) => {
+        const [queryName, queryValue] = subStack.split('=')
+
+        const defaultValue = defaultValues[queryName]
+        result.hash[queryName] = typeof defaultValue === 'boolean' ?
+          Boolean(queryValue) :
+          typeof defaultValue === 'number' ?
+            Number(queryValue) :
+            queryValue
+      })
     }
+    stack = ''
   }
-  if (state !== 'end') throw new Error(`state not end ${state}`)
-  return result
+
+  for (let i = 0; i < name.length; i++) {
+    const c = name[i]
+    if (c === '[' && state === 'none') {
+      state = 'name'
+    } else if (c === '?' && (state === 'name' || state === 'hash')) {
+      clearLastStack()
+      state = 'query'
+    } else if (c === '#' && (state === 'name' || state === 'query')) {
+      clearLastStack()
+      state = 'hash'
+    } else if (c === ']' && (state === 'name' || state === 'query' || state === 'hash')) {
+      clearLastStack()
+      state = 'end'
+      return result
+    } else {
+      stack += c
+    }
+
+  }
 }
 
 export function sendCommandToPanel(path, command, argv) {
@@ -66,9 +84,9 @@ export function hidePanel(path) {
 }
 
 export function recursiveParse(entry, parsers, context = {}) {
-  const { name, query = {} } = parseNameAndQuery(entry.name)
+  const { name, query = {}, hash } = parseNameAndQuery(entry.name)
   let resolvedName = name
-  if (resolvedName === null) {
+  if (resolvedName === '') {
     if (entry.isArtboard) {
       resolvedName = 'App'
     } else if (entry.isGroup) {
@@ -90,7 +108,10 @@ export function recursiveParse(entry, parsers, context = {}) {
   if (next && next.length !== 0) {
     result.children = next.map(child => recursiveParse(child, parsers, context))
   }
-  return Object.assign(result, { props: Object.assign(result.props, query) })
+  return Object.assign(result, {
+    state: Object.assign(result.state || {}, query),
+    props: Object.assign(result.props || {}, hash),
+  })
 }
 
 export function isWindowOpened(path) {

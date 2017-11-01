@@ -1,6 +1,7 @@
 // import A from './A'
 // import Button from './Button'
 import App from './App'
+import Case from './Case'
 import Group from './Group'
 import Unknown from './Unknown'
 import Ignore from './Ignore'
@@ -12,6 +13,7 @@ import Text from './Text'
 export default {
   // A,
   // Button,
+  Case,
   Group,
   App,
   Unknown,

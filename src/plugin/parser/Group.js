@@ -20,15 +20,15 @@ export default function Group(group, { createImgRef }) {
   const { query } = parseNameAndQuery(group.name, getDefaultState)
   const node = {
     type: 'Group',
-    props: Object.assign(query, { style: extractBoxRelatedStyle(group) }),
+    state: Object.assign(query, { style: extractBoxRelatedStyle(group) }),
   }
 
   if (bgLayer) {
     if (bgLayer.isImage || bgLayer.isGroup) {
-      node.props.style.background = createImgRef(bgLayer)
+      node.state.style.background = createImgRef(bgLayer)
     } else {
       // TODO 配置 style 上去
-      Object.assign(node.props.style, extractEffectStyle(bgLayer))
+      Object.assign(node.state.style, extractEffectStyle(bgLayer))
     }
   }
 

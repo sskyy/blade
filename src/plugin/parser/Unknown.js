@@ -1,8 +1,8 @@
 export default function Unknown(layer) {
   return [{
     type: 'Unknown',
-    props: {
+    state: {
       originName: String(layer.name),
-    }
+    },
   }, []]
 }

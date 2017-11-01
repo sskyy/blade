@@ -1,11 +1,11 @@
-import { extractBoxStyle } from './common'
+import { extractBoxRelatedStyle } from './common'
 
 export default function Img(layer, { createImgRef }) {
   return [{
     type: 'Img',
-    props: {
+    state: {
       src: createImgRef(layer),
-      style: extractBoxStyle(layer),
+      style: extractBoxRelatedStyle(layer),
     },
   }, []]
 }
