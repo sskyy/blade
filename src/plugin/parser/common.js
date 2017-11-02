@@ -97,7 +97,6 @@ export function layerToBase64(layer, options = {}) {
   const data = NSData.alloc().initWithContentsOfURL(url)
   const base64 = data.base64EncodedStringWithOptions(0)
 
-  // TODO remove data
   NSFileManager.defaultManager().removeItemAtURL_error(url, null)
   return `data:image/png;base64,${base64}`
 }

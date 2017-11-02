@@ -132,7 +132,6 @@ export function exportLayer(layer, options = {}) {
   const fullPath = `${fileFolder}/${layer.id}@${finalOptions.scales}x.png`
 
   layer.export(finalOptions)
-// TODO renameFile
 //   const url = NSURL.fileURLWithPath(fullPath)
 //   const data = NSData.alloc().initWithContentsOfURL(url)
 //   const base64 = data.base64EncodedStringWithOptions(0)

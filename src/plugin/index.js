@@ -25,7 +25,7 @@ export function sendDataToRunner(context) {
   initWithContext(context)
   if (!context.api) return document.showMessage('error context.api!')
   if (!isWindowOpened(RUNNER_URL)) {
-    showWindow(RUNNER_URL)
+    return document.showMessage('please open runner first!')
   }
 
   let firstArtboard
@@ -38,7 +38,7 @@ export function sendDataToRunner(context) {
   // resultStr.writeToFile_atomically(context.document.fileURL().path().replace(/\.sketch$/, '.json'), true)
   const result = recursiveParse(firstArtboard, parsers, parserContext)
   sendCommandToWindow(RUNNER_URL, 'config', result)
-  document.showMessage('done!')
+  return document.showMessage('done!')
 }
 
 export function onSelectionChanged(context) {
@@ -88,7 +88,6 @@ export function parseLayer(context) {
   context.api().selectedDocument.selectedLayers.iterate((layer) => {
     if (!first) first = layer
   })
-  // TODO recursive parse layer
   const result = NSString.stringWithFormat('%@', JSON.stringify(parsers.Group(first)))
 
   result.writeToFile_atomically(context.document.fileURL().path().replace(/\.sketch$/, '.json'), true)

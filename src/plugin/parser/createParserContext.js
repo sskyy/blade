@@ -5,7 +5,7 @@ export default function createParserContext() {
 
   return {
     createImgRef(layer) {
-      // TODO 重名检测
+      // TODO 生成真实的图片并且做重名检测
       // const name = String(layer.name)
       // imageRefs.push({ id: layer.id, name })
       return layerToBase64(layer)

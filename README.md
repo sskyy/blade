@@ -5,7 +5,7 @@
  - [x] Group( as default)
  - [ ] A
  - [ ] Button
- - [ ] Case
+ - [x] Case
  - [x] Ignore
  - [x] Img
  - [ ] Input
