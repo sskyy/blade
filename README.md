@@ -8,7 +8,7 @@ Blade is a sketch plugin designed to generate **prototype** web pages. Add simpl
  - Create a artboard to group your layers.
  - Run `Blade -> Export Current Artboard` on plugin menu.
 
-
+You can check the example file and its output in the **example** folder.
 
 ## Annotation Usage
 
