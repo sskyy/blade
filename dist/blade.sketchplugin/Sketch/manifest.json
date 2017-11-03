@@ -1,0 +1,68 @@
+{
+  "name": "Blade",
+  "identifier": "com.ariesate.blade",
+  "authorEmail": "skyking_H@hotmail.com",
+  "version": "0.0.3",
+  "disableCocoaScriptPreprocessor": false,
+  "commands": [
+    {
+      "script": "plugin.js",
+      "handler": "openRunner",
+      "name": "OpenRunner",
+      "identifier": "openRunner"
+    },
+    {
+      "script": "plugin.js",
+      "handler": "onSelectionChanged",
+      "name": "Selection Changed",
+      "identifier": "onSelectionChanged"
+    },
+    {
+      "script": "plugin.js",
+      "handler": "exportCurrentLayer",
+      "name": "exportCurrentLayer",
+      "identifier": "exportCurrentLayer"
+    },
+    {
+      "script": "plugin.js",
+      "handler": "parseLayer",
+      "name": "parseLayer",
+      "identifier": "parseLayer"
+    },
+    {
+      "script": "plugin.js",
+      "handler": "sendDataToRunner",
+      "name": "sendDataToRunner",
+      "identifier": "sendDataToRunner"
+    },
+    {
+      "script": "plugin.js",
+      "handler": "testSendAction",
+      "name": "testSendAction",
+      "identifier": "testSendAction"
+    },
+    {
+      "script": "plugin.js",
+      "handlers": {
+        "actions": {
+          "SelectionChanged.finish": "onSelectionChanged"
+        }
+      }
+    }
+  ],
+  "menu": {
+    "isRoot": 1,
+    "items": [
+      {
+        "title": "Blade",
+        "items": [
+          "openRunner",
+          "sendDataToRunner",
+          "exportCurrentLayer",
+          "testSendAction",
+          "parseLayer"
+        ]
+      }
+    ]
+  }
+}

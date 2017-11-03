@@ -3,7 +3,6 @@ node_modules/
 
 # Build folder
 Contents/Sketch
-dist
 
 # Ignore knowledge base for now until cleaned up :D
 knowledge/
