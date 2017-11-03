@@ -44,7 +44,7 @@
       {
         "script": "plugin.js",
         "handler": "openRunner",
-        "name": "OpenRunner",
+        "name": "Open Runner",
         "identifier": "openRunner"
       },
       {
@@ -56,26 +56,14 @@
       {
         "script": "plugin.js",
         "handler": "exportCurrentLayer",
-        "name": "exportCurrentLayer",
+        "name": "Export Current Artboard",
         "identifier": "exportCurrentLayer"
       },
       {
         "script": "plugin.js",
-        "handler": "parseLayer",
-        "name": "parseLayer",
-        "identifier": "parseLayer"
-      },
-      {
-        "script": "plugin.js",
         "handler": "sendDataToRunner",
-        "name": "sendDataToRunner",
+        "name": "Send Data To Runner",
         "identifier": "sendDataToRunner"
-      },
-      {
-        "script": "plugin.js",
-        "handler": "testSendAction",
-        "name": "testSendAction",
-        "identifier": "testSendAction"
       },
       {
         "script": "plugin.js",
@@ -92,11 +80,9 @@
         {
           "title": "Blade",
           "items": [
-            "openRunner",
-            "sendDataToRunner",
             "exportCurrentLayer",
-            "testSendAction",
-            "parseLayer"
+            "openRunner",
+            "sendDataToRunner"
           ]
         }
       ]

@@ -5,6 +5,6 @@
    - [x]  完成导出脚本
    - [x] 支持导出图片
    - [x] 打包成一个完整的 blade.sketchplugin 文件
-   - [ ] 去 boilerplate context 化
    - [ ] 做个完整的 demo
    - [ ] 完成文档
+   - [ ] 去 boilerplate context 化
