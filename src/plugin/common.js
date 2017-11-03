@@ -158,23 +158,30 @@ export function removeFile(path) {
   manager.removeItemAtPath_error(path, null)
 }
 
-export function exportLayer(layer, options = {}) {
-  const fileFolder = NSTemporaryDirectory()
-
+export function exportLayer(layer, targetFolder, name, options = {}) {
   const finalOptions = {
     ...options,
     'use-id-for-name': true,
     scales: '3',
     formats: 'png',
-    output: fileFolder,
+    output: targetFolder,
   }
 
-  const fullPath = `${fileFolder}/${layer.id}@${finalOptions.scales}x.png`
-
+  const tmpFullPath = `${targetFolder}/${layer.id}@${finalOptions.scales}x.${finalOptions.formats}`
   layer.export(finalOptions)
-//   const url = NSURL.fileURLWithPath(fullPath)
-//   const data = NSData.alloc().initWithContentsOfURL(url)
-//   const base64 = data.base64EncodedStringWithOptions(0)
-//   NSFileManager.defaultManager().removeItemAtURL_error(url, null)
-//   return `data:image/png;base64,${base64}`
+  log(`generating image: ${tmpFullPath}`)
+  const manager = NSFileManager.defaultManager()
+  const targetPath = `${targetFolder}/${name}.${finalOptions.formats}`
+  log(`renaming image to ${targetPath}` )
+  manager.moveItemAtURL_toURL_error(
+    NSURL.fileURLWithPath(tmpFullPath),
+    NSURL.fileURLWithPath(targetPath),
+    null
+  )
+}
+
+
+export function parseRawName(inputName) {
+  const name = String(inputName)
+  return name.replace(/^\[.+\]/, '')
 }

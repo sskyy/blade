@@ -1,6 +1,6 @@
-import { toCSSRGBA, extractPositionStyle } from './common'
+import { toCSSRGBA, extractBoxRelatedStyle } from './common'
 
-export default function TextGroup(layer) {
+export default function Text(layer) {
   const node = {
     type: 'Text',
     state: {
@@ -8,7 +8,7 @@ export default function TextGroup(layer) {
       style: {
         fontSize: layer.sketchObject.fontSize(),
         color: toCSSRGBA(layer.sketchObject.textColor()),
-        ...extractPositionStyle(layer),
+        ...extractBoxRelatedStyle(layer),
         // TODO align 翻译
         align: layer.sketchObject.textAlignment(),
         // TODO line spacing 翻译成 line height

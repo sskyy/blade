@@ -15,6 +15,7 @@
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "copy-dir": "^0.3.0",
     "eslint": "^4.5.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-babel": "^4.1.2",
@@ -25,10 +26,80 @@
   },
   "scripts": {
     "start": "cd src/plugin && webpack --env.dev --watch && cd ../..",
-    "build": "cd src/plugin && webpack --env.production && cd ../.. && node ./scripts/attachHandler.js && node ./scripts/copyManifest.js"
+    "build": "cd src/plugin && webpack --env.production && cd ../.. && node ./scripts/attachHandler.js && node ./scripts/copyManifest.js",
+    "bundle": "npm run build && node ./scripts/bundle.js"
   },
   "dependencies": {
     "babel-plugin-module-alias": "^1.6.0",
-    "cocoascript-class": "^0.1.2"
+    "cocoascript-class": "^0.1.2",
+    "rimraf": "^2.6.2"
+  },
+  "sketch": {
+    "name": "Blade",
+    "identifier": "com.ariesate.blade",
+    "authorEmail": "skyking_H@hotmail.com",
+    "version": "0.0.3",
+    "disableCocoaScriptPreprocessor": false,
+    "commands": [
+      {
+        "script": "plugin.js",
+        "handler": "openRunner",
+        "name": "OpenRunner",
+        "identifier": "openRunner"
+      },
+      {
+        "script": "plugin.js",
+        "handler": "onSelectionChanged",
+        "name": "Selection Changed",
+        "identifier": "onSelectionChanged"
+      },
+      {
+        "script": "plugin.js",
+        "handler": "exportCurrentLayer",
+        "name": "exportCurrentLayer",
+        "identifier": "exportCurrentLayer"
+      },
+      {
+        "script": "plugin.js",
+        "handler": "parseLayer",
+        "name": "parseLayer",
+        "identifier": "parseLayer"
+      },
+      {
+        "script": "plugin.js",
+        "handler": "sendDataToRunner",
+        "name": "sendDataToRunner",
+        "identifier": "sendDataToRunner"
+      },
+      {
+        "script": "plugin.js",
+        "handler": "testSendAction",
+        "name": "testSendAction",
+        "identifier": "testSendAction"
+      },
+      {
+        "script": "plugin.js",
+        "handlers": {
+          "actions": {
+            "SelectionChanged.finish": "onSelectionChanged"
+          }
+        }
+      }
+    ],
+    "menu": {
+      "isRoot": 1,
+      "items": [
+        {
+          "title": "Blade",
+          "items": [
+            "openRunner",
+            "sendDataToRunner",
+            "exportCurrentLayer",
+            "testSendAction",
+            "parseLayer"
+          ]
+        }
+      ]
+    }
   }
 }

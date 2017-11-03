@@ -100,3 +100,9 @@ export function layerToBase64(layer, options = {}) {
   NSFileManager.defaultManager().removeItemAtURL_error(url, null)
   return `data:image/png;base64,${base64}`
 }
+
+export function iteratorToArray(iter) {
+  const result = []
+  iter.iterate((item) => result.push(item))
+  return result
+}

@@ -16,9 +16,10 @@ import {
   copyFile,
   writeToFile,
   removeFile,
+  exportLayer
 } from './common'
 import parsers from './parser'
-import createParserContext from './parser/createParserContext'
+import createParserContext, { IMAGE_FOLDER } from './parser/createParserContext'
 
 
 const RUNNER_URL = 'http://127.0.0.1:8080/runner.html'
@@ -52,8 +53,10 @@ export function exportCurrentLayer(context) {
   initWithContext(context)
   if (!context.api) return document.showMessage('error context.api!')
 
+  const sketch = context.api()
+
   let firstArtboard
-  context.api().selectedDocument.selectedPage.iterate((page) => {
+  sketch.selectedDocument.selectedPage.iterate((page) => {
     if (!firstArtboard) firstArtboard = page
   })
 
@@ -68,6 +71,13 @@ export function exportCurrentLayer(context) {
   copyFile(`${runnerPath}/index.html`, `${exportFolder}/index.html`)
   const result = recursiveParse(firstArtboard, parsers, parserContext)
   writeToFile(`${exportFolder}/config.js`, `sketchBridge({ payload: ${JSON.stringify(result)} })`)
+
+  // handle images
+  const imageFolder = `${exportFolder}/${IMAGE_FOLDER}`
+  createFolder(imageFolder)
+  parserContext.getImgRefs(({id, name, options}) => {
+    exportLayer(sketch.selectedDocument.layerWithID(id), imageFolder, name, options)
+  })
 
   return document.showMessage('done!')
 }
