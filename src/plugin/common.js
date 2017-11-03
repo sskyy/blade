@@ -118,6 +118,46 @@ export function isWindowOpened(path) {
   return Boolean(WebViewUtils.findWebView(path))
 }
 
+export function createFolder(path) {
+  const manager = NSFileManager.defaultManager()
+  manager.createDirectoryAtPath_withIntermediateDirectories_attributes_error(path, true, null, null)
+    // [file_manager createDirectoryAtPath:[folders objectAtIndex:i] withIntermediateDirectories:true attributes:nil error:nil];
+}
+
+export function getPluginFolderPath (context) {
+  // Get absolute folder path of plugin
+  let split = context.scriptPath.split('/');
+  split.splice(-3, 3);
+  return split.join('/');
+}
+
+export function getCurrentFilePath(context) {
+  return context.document.fileURL().path().replace(/\.sketch$/, '')
+}
+
+export function isFileExist(source) {
+  const manager = NSFileManager.defaultManager()
+  return manager.fileExistsAtPath(source)
+}
+
+export function copyFile(source, target) {
+  const manager = NSFileManager.defaultManager()
+  if( !manager.fileExistsAtPath(source)) throw new Error(`file not exist ${source}`)
+  // [file_manager copyItemAtPath:org toPath:tar error:nil];
+  manager.copyItemAtPath_toPath_error(source, target, null)
+}
+
+export function writeToFile(path, content) {
+  const resultStr = NSString.stringWithFormat('%@', content)
+  resultStr.writeToFile_atomically(path, true)
+}
+
+export function removeFile(path) {
+  const manager = NSFileManager.defaultManager()
+    // [file_manager removeItemAtPath:folder error:nil]
+  manager.removeItemAtPath_error(path, null)
+}
+
 export function exportLayer(layer, options = {}) {
   const fileFolder = NSTemporaryDirectory()
 

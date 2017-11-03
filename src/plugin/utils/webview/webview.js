@@ -57,7 +57,7 @@ export function sendAction (webView, name, payload = {}) {
     return;
   }
   // `sketchBridge` is the JS function exposed on window in the webview!
-  const script = `sketchBridge('${JSON.stringify({name, payload})}');`;
+  const script = `sketchBridge(${JSON.stringify({name, payload})});`;
   webView.evaluateJavaScript_completionHandler(script, null);
 }
 

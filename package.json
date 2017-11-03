@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start": "cd src/plugin && webpack --env.dev --watch && cd ../..",
-    "build": "cd src/plugin && webpack --env.production && cd ../.. && node ./scripts/attachHandler.js"
+    "build": "cd src/plugin && webpack --env.production && cd ../.. && node ./scripts/attachHandler.js && node ./scripts/copyManifest.js"
   },
   "dependencies": {
     "babel-plugin-module-alias": "^1.6.0",

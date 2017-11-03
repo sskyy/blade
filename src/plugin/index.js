@@ -9,6 +9,13 @@ import {
   showWindow,
   recursiveParse,
   isWindowOpened,
+  createFolder,
+  getCurrentFilePath,
+  getPluginFolderPath,
+  isFileExist,
+  copyFile,
+  writeToFile,
+  removeFile,
 } from './common'
 import parsers from './parser'
 import createParserContext from './parser/createParserContext'
@@ -41,6 +48,30 @@ export function sendDataToRunner(context) {
   return document.showMessage('done!')
 }
 
+export function exportCurrentLayer(context) {
+  initWithContext(context)
+  if (!context.api) return document.showMessage('error context.api!')
+
+  let firstArtboard
+  context.api().selectedDocument.selectedPage.iterate((page) => {
+    if (!firstArtboard) firstArtboard = page
+  })
+
+  if (!firstArtboard || !firstArtboard.isArtboard) return document.showMEssage('please select an artboard')
+
+  const exportFolder = getCurrentFilePath(context)
+  if (isFileExist(exportFolder)) removeFile(exportFolder)
+
+  createFolder(exportFolder)
+  const runnerPath = `${getPluginFolderPath(context)}/Contents/Resources/runner`
+  copyFile(`${runnerPath}/index.js`, `${exportFolder}/index.js`)
+  copyFile(`${runnerPath}/index.html`, `${exportFolder}/index.html`)
+  const result = recursiveParse(firstArtboard, parsers, parserContext)
+  writeToFile(`${exportFolder}/config.js`, `sketchBridge({ payload: ${JSON.stringify(result)} })`)
+
+  return document.showMessage('done!')
+}
+
 export function onSelectionChanged(context) {
   initWithContext(context)
   const currentDocument = context.actionContext.document
@@ -70,16 +101,6 @@ export function onSelectionChanged(context) {
 export function testSendAction(context) {
   initWithContext(context)
   WebViewUtils.sendAction('aaa', { value: true })
-}
-
-export function exportLayer(context) {
-  initWithContext(context)
-  const sketch = context.api()
-  const options = { scales: '3', formats: 'png' }
-  sketch.selectedDocument.selectedLayers.iterate((layer) => {
-    layer.export(options)
-  })
-  document.showMessage('done!')
 }
 
 export function parseLayer(context) {

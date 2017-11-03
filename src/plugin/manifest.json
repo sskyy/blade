@@ -4,13 +4,13 @@
   "description": "Blade 1.0!",
   "authorEmail": "skyking_H@hotmail.com",
   "author": "sskyy",
-  "version": "1.0.14",
+  "version": "0.0.2",
   "disableCocoaScriptPreprocessor": false,
   "commands": [
     {
       "script": "plugin.js",
       "handler": "openRunner",
-      "name": "Open Window",
+      "name": "OpenRunner",
       "identifier": "openRunner"
     },
     {
@@ -21,9 +21,9 @@
     },
     {
       "script": "plugin.js",
-      "handler": "exportLayer",
-      "name": "exportLayer",
-      "identifier": "exportLayer"
+      "handler": "exportCurrentLayer",
+      "name": "exportCurrentLayer",
+      "identifier": "exportCurrentLayer"
     },
     {
       "script": "plugin.js",
@@ -60,8 +60,8 @@
         "items": [
           "openRunner",
           "sendDataToRunner",
+          "exportCurrentLayer",
           "testSendAction",
-          "exportLayer",
           "parseLayer"
         ]
       }
