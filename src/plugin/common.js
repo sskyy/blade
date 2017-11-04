@@ -58,8 +58,9 @@ export function parseNameAndQuery(inputName, getDefaultValues = () => ({
     } else {
       stack += c
     }
-
   }
+
+  throw new Error(`tag not closed: ${inputName}`)
 }
 
 export function sendCommandToPanel(path, command, argv) {

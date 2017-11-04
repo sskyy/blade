@@ -52,6 +52,7 @@ export function sendDataToRunner(context) {
 export function exportCurrentLayer(context) {
   initWithContext(context)
   if (!context.api) return document.showMessage('error context.api!')
+  if (!context.document.fileURL()) return document.showMessage('please save your file first!')
 
   const sketch = context.api()
 
@@ -60,7 +61,7 @@ export function exportCurrentLayer(context) {
     if (!firstArtboard) firstArtboard = page
   })
 
-  if (!firstArtboard || !firstArtboard.isArtboard) return document.showMEssage('please select an artboard')
+  if (!firstArtboard || !firstArtboard.isArtboard) return document.showMessage('please select an artboard')
 
   const exportFolder = getCurrentFilePath(context)
   if (isFileExist(exportFolder)) removeFile(exportFolder)
@@ -69,7 +70,14 @@ export function exportCurrentLayer(context) {
   const runnerPath = `${getPluginFolderPath(context)}/Contents/Resources/runner`
   copyFile(`${runnerPath}/index.js`, `${exportFolder}/index.js`)
   copyFile(`${runnerPath}/index.html`, `${exportFolder}/index.html`)
-  const result = recursiveParse(firstArtboard, parsers, parserContext)
+  // TODO add error message
+  try {
+    const result = recursiveParse(firstArtboard, parsers, parserContext)
+  } catch(e) {
+    log(`parseError: ${e.message}`)
+    return document.showMessage(`error: ${e.message}`)
+  }
+
   writeToFile(`${exportFolder}/config.js`, `sketchBridge({ payload: ${JSON.stringify(result)} })`)
 
   // handle images
