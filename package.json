@@ -1,7 +1,7 @@
 {
   "name": "sketch-plugin-blade",
   "description": "Blade 0.0.2",
-  "author": "sskyy",
+  "author": "sskyy <skyking_H@hotmail.com>",
   "version": "0.0.2",
   "repository": {
     "type": "git",
@@ -27,18 +27,18 @@
   "scripts": {
     "start": "cd src/plugin && webpack --env.dev --watch && cd ../..",
     "build": "cd src/plugin && webpack --env.production && cd ../.. && node ./scripts/attachHandler.js && node ./scripts/copyManifest.js",
-    "bundle": "npm run build && node ./scripts/bundle.js"
+    "bundle": "npm run build && node ./scripts/bundle.js && node ./scripts/copyManifest.js -p"
   },
   "dependencies": {
     "babel-plugin-module-alias": "^1.6.0",
     "cocoascript-class": "^0.1.2",
+    "commander": "^2.11.0",
     "rimraf": "^2.6.2"
   },
   "sketch": {
     "name": "Blade",
     "identifier": "com.ariesate.blade",
     "authorEmail": "skyking_H@hotmail.com",
-    "version": "0.0.3",
     "disableCocoaScriptPreprocessor": false,
     "commands": [
       {

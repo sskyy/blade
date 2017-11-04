@@ -10,4 +10,4 @@ if (fs.existsSync(dest)) {
 fs.mkdir(dest)
 const src = path.join(__dirname, '../Contents')
 
-copyDir.sync(src, `${dest}/blade.sketchplugin`)
+copyDir.sync(src, `${dest}/blade.sketchplugin/Contents`)

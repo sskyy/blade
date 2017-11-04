@@ -1473,10 +1473,6 @@ var onSelectionChanged = handlers.onSelectionChanged;
 
 var exportCurrentLayer = handlers.exportCurrentLayer;
 
-var parseLayer = handlers.parseLayer;
-
 var sendDataToRunner = handlers.sendDataToRunner;
-
-var testSendAction = handlers.testSendAction;
 
 var undefined = handlers.undefined;
