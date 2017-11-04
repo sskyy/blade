@@ -1,4 +1,4 @@
-# Blade 0.0.2
+# Blade
 
 [![Join the chat at https://gitter.im/Sketch-Plugin-Blade/Lobby](https://badges.gitter.im/Sketch-Plugin-Blade/Lobby.svg)](https://gitter.im/Sketch-Plugin-Blade/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 

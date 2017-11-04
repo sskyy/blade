@@ -429,6 +429,8 @@ function parseNameAndQuery(inputName) {
       stack += c;
     }
   }
+
+  throw new Error('tag not closed: ' + inputName);
 }
 
 function sendCommandToPanel(path, command, argv) {
@@ -731,6 +733,7 @@ function sendDataToRunner(context) {
 function exportCurrentLayer(context) {
   Object(__WEBPACK_IMPORTED_MODULE_0__utils_core__["b" /* initWithContext */])(context);
   if (!context.api) return __WEBPACK_IMPORTED_MODULE_0__utils_core__["a" /* document */].showMessage('error context.api!');
+  if (!context.document.fileURL()) return __WEBPACK_IMPORTED_MODULE_0__utils_core__["a" /* document */].showMessage('please save your file first!');
 
   var sketch = context.api();
 
@@ -739,7 +742,7 @@ function exportCurrentLayer(context) {
     if (!firstArtboard) firstArtboard = page;
   });
 
-  if (!firstArtboard || !firstArtboard.isArtboard) return __WEBPACK_IMPORTED_MODULE_0__utils_core__["a" /* document */].showMEssage('please select an artboard');
+  if (!firstArtboard || !firstArtboard.isArtboard) return __WEBPACK_IMPORTED_MODULE_0__utils_core__["a" /* document */].showMessage('please select an artboard');
 
   var exportFolder = Object(__WEBPACK_IMPORTED_MODULE_2__common__["d" /* getCurrentFilePath */])(context);
   if (Object(__WEBPACK_IMPORTED_MODULE_2__common__["g" /* isFileExist */])(exportFolder)) Object(__WEBPACK_IMPORTED_MODULE_2__common__["l" /* removeFile */])(exportFolder);
@@ -748,7 +751,14 @@ function exportCurrentLayer(context) {
   var runnerPath = Object(__WEBPACK_IMPORTED_MODULE_2__common__["e" /* getPluginFolderPath */])(context) + '/Contents/Resources/runner';
   Object(__WEBPACK_IMPORTED_MODULE_2__common__["a" /* copyFile */])(runnerPath + '/index.js', exportFolder + '/index.js');
   Object(__WEBPACK_IMPORTED_MODULE_2__common__["a" /* copyFile */])(runnerPath + '/index.html', exportFolder + '/index.html');
-  var result = Object(__WEBPACK_IMPORTED_MODULE_2__common__["k" /* recursiveParse */])(firstArtboard, __WEBPACK_IMPORTED_MODULE_3__parser__["a" /* default */], parserContext);
+  // TODO add error message
+  try {
+    var _result = Object(__WEBPACK_IMPORTED_MODULE_2__common__["k" /* recursiveParse */])(firstArtboard, __WEBPACK_IMPORTED_MODULE_3__parser__["a" /* default */], parserContext);
+  } catch (e) {
+    log('parseError: ' + e.message);
+    return __WEBPACK_IMPORTED_MODULE_0__utils_core__["a" /* document */].showMessage('error: ' + e.message);
+  }
+
   Object(__WEBPACK_IMPORTED_MODULE_2__common__["q" /* writeToFile */])(exportFolder + '/config.js', 'sketchBridge({ payload: ' + JSON.stringify(result) + ' })');
 
   // handle images
