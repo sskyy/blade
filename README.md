@@ -1,6 +1,6 @@
 # Blade
 
-[![Version]](https://badge.fury.io/gh/sskyy%2Fblade@2x.png)
+[![Version](https://img.shields.io/github/package-json/v/sskyy/blade.svg)](https://github.com/sskyy/blade)
 [![Join the chat at https://gitter.im/Sketch-Plugin-Blade/Lobby](https://badges.gitter.im/Sketch-Plugin-Blade/Lobby.svg)](https://gitter.im/Sketch-Plugin-Blade/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Blade is a sketch plugin designed to generate **prototype** web pages. Add simple annotation to your sketch layers and blade will get the magic done.
