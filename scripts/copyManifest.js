@@ -27,5 +27,5 @@ const dest = program.prod ?
   path.join(__dirname, '../dist/blade.sketchplugin/Contents/Sketch/manifest.json'):
   path.join(__dirname, '../Contents/Sketch/manifest.json')
 
-console.log(`writting manifest into ${dest} with mode: ${program.prod}`)
+console.log(`writing manifest into ${dest} with mode: ${program.prod}`)
 fs.writeFileSync(dest, JSON.stringify(finalManifest , null, 2))

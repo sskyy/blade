@@ -5,6 +5,9 @@
 
 Blade is a sketch plugin designed to generate **prototype** web pages. Add simple annotation to your sketch layers and blade will get the magic done.
 
+<iframe src="https://player.vimeo.com/video/243630016" width="640" height="400" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<p><a href="https://vimeo.com/243630016">bladeNewDemo</a> from <a href="https://vimeo.com/sskyy">zhenyu hou</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+
 ## Installation
 
  - Copy blade.sketchplugin in dist folder to sketch plugin folder.

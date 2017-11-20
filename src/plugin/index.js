@@ -71,8 +71,9 @@ export function exportCurrentLayer(context) {
   copyFile(`${runnerPath}/index.js`, `${exportFolder}/index.js`)
   copyFile(`${runnerPath}/index.html`, `${exportFolder}/index.html`)
   // TODO add error message
+  let result
   try {
-    const result = recursiveParse(firstArtboard, parsers, parserContext)
+    result = recursiveParse(firstArtboard, parsers, parserContext)
   } catch(e) {
     log(`parseError: ${e.message}`)
     return document.showMessage(`error: ${e.message}`)

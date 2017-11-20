@@ -1,8 +1,8 @@
 {
   "name": "sketch-plugin-blade",
-  "description": "Blade 0.0.2",
+  "description": "A sketch plugin to generate prototype web pages.",
   "author": "sskyy <skyking_H@hotmail.com>",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/sskyy/blade"
