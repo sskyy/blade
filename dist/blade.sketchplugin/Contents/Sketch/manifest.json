@@ -50,7 +50,7 @@
       }
     ]
   },
-  "description": "Blade 0.0.2",
+  "description": "A sketch plugin to generate prototype web pages.",
   "author": "sskyy",
-  "version": "0.0.3"
+  "version": "0.0.4"
 }

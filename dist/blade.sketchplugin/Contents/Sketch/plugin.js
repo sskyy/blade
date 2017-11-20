@@ -752,8 +752,9 @@ function exportCurrentLayer(context) {
   Object(__WEBPACK_IMPORTED_MODULE_2__common__["a" /* copyFile */])(runnerPath + '/index.js', exportFolder + '/index.js');
   Object(__WEBPACK_IMPORTED_MODULE_2__common__["a" /* copyFile */])(runnerPath + '/index.html', exportFolder + '/index.html');
   // TODO add error message
+  var result = void 0;
   try {
-    var _result = Object(__WEBPACK_IMPORTED_MODULE_2__common__["k" /* recursiveParse */])(firstArtboard, __WEBPACK_IMPORTED_MODULE_3__parser__["a" /* default */], parserContext);
+    result = Object(__WEBPACK_IMPORTED_MODULE_2__common__["k" /* recursiveParse */])(firstArtboard, __WEBPACK_IMPORTED_MODULE_3__parser__["a" /* default */], parserContext);
   } catch (e) {
     log('parseError: ' + e.message);
     return __WEBPACK_IMPORTED_MODULE_0__utils_core__["a" /* document */].showMessage('error: ' + e.message);
