@@ -5,7 +5,7 @@
 
 Blade is a sketch plugin designed to generate **prototype** web pages. Add simple annotation to your sketch layers and blade will get the magic done.
 
-[![Blade New Demo](https://gw.alipayobjects.com/zos/rmsportal/EGHLuSEVWfRnYhKdNxMe.png)](https://vimeo.com/243630016)
+[![Blade New Demo](https://gw.alipayobjects.com/zos/rmsportal/QmWxMLSFKRRCbMrKvfTD.png)](https://vimeo.com/243630016)
 
 ## Installation
 
